@@ -192,7 +192,7 @@ var FbWidget = {
 		var settings = $widget.data('fbWidget');
 		var $languageSection = $(fbOptions._fieldSettingsLanguageSection);
 		var $language = $('#language');
-		$('legend', $languageSection).text('Language: ' + $language.find('option:selected').text());
+		//$('legend', $languageSection).text('Language: ' + $language.find('option:selected').text());
 		var fbLanguageSection = {target: $this, item: $widget, settings: settings[$language.val()]};
 		var fieldSettings = $this._getFieldSettingsLanguageSection(event, fbLanguageSection);
 		// remote all child nodes except legend

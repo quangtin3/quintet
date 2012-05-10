@@ -1,8 +1,8 @@
 /*
- * Main component of JQuery Form Builder plugin, the Form Builder container itself 
- * consists of builder palette contains widgets supported by the form builder and 
- * builder panel where the constructed form display. 
- * 
+ * Main component of JQuery Form Builder plugin, the Form Builder container itself
+ * consists of builder palette contains widgets supported by the form builder and
+ * builder panel where the constructed form display.
+ *
  * Revision: @REVISION
  * Version: @VERSION
  * Copyright 2011 Lim Chee Kin (limcheekin@vobject.com)
@@ -14,7 +14,7 @@
 
 var FormBuilder = {
   options: { // default options. values are stored in prototype
-		fields: 'PlainText, SingleLineText',
+		fields: 'PlainText, SingleLineText, EmailText',
 		tabSelected: 0,
 		readOnly: false,
 		tabDisabled: [],
@@ -26,28 +26,18 @@ var FormBuilder = {
 				classes: ['leftAlign'],
 				heading: 'h2',
 				styles: {
-					fontFamily: 'default', 
+					fontFamily: 'default',
 					fontSize: 'default',
-					fontStyles: [1, 0, 0] // bold, italic, underline					
-				}				
+					fontStyles: [1, 0, 0] // bold, italic, underline
+				}
 			},
-			zh_CN: {
-				name: '表格',
-				classes: ['rightAlign'],
-				heading: 'h2',
-				styles: {
-					fontFamily: 'default', 
-					fontSize: 'default',
-					fontStyles: [1, 0, 0] // bold, italic, underline					
-				}			
-			},			
 			styles : {
 				color : 'default', // browser default
-				backgroundColor : 'default'	
+				backgroundColor : 'default'
 			}
 		},
 		_id: '#container',
-		_languages : [ 'en', 'zh_CN' ],
+		_languages : [ 'en' ],
 		_builderPanel: '#builderPanel',
 		_builderForm: '#builderForm',
 		_emptyBuilderPanel: '#emptyBuilderPanel',
@@ -62,7 +52,7 @@ var FormBuilder = {
     _languagesSupportIdGeneration: ['en'],
     _dragBoxCss: {
 		  opacity: 0.6,
-		  zIndex: 8888, 
+		  zIndex: 8888,
 		  border: "5px solid #cccccc"
 	  },
 		_formControls: '#builderPanel fieldset',
@@ -96,20 +86,20 @@ var FormBuilder = {
 				$(".floatingPanel").css("position", "fixed");
 				$(".floatingPanel").css("top", "0");
 			}
-			
+
 			if ($(window).scrollTop() <= $(".floatingPanelIdentifier").position({scroll : false}).top) {
 				$(".floatingPanel").css("position", "relative");
 				$(".floatingPanel").css("top",
 						$(".floatingPanelIdentifier").position);
 			}
 		});
-		
+
 		$(this.options._paletteTabs).tabs({
-			selected: this.options.tabSelected, 
+			selected: this.options.tabSelected,
 			disabled: this.options.tabDisabled,
-			select: this._isFieldSettingsTabCanOpen 
+			select: this._isFieldSettingsTabCanOpen
 		});
-		
+
 		var widgets = this.options.fields;
 		widgets = widgets.split(',');
 		var length = widgets.length;
@@ -118,11 +108,11 @@ var FormBuilder = {
 		var i;
 	  for (i = 0; i < length; i++) {
 		  widgetOptions = $['fb']['fb' + $.trim(widgets[i])].prototype.options;
-		  widget = $('<a id="' + widgetOptions._type +  '" href="#" class="fbWidget">' + widgetOptions.name + '</a>');
+		  widget = $('<a id="' + widgetOptions._type +  '" href="#" class="fbWidget btn">' + widgetOptions.name + '</a>');
       widget.button()['fb' + widgetOptions._type]()
       .appendTo(widgetOptions.belongsTo);
       this._initDraggable(widget, widgetOptions._type);
-	    }			  
+	    }
    },
   _initDraggable: function(widget, type) {
 	  widget.draggable({
@@ -145,22 +135,22 @@ var FormBuilder = {
 				ui.helper.attr('rel', $prevCtrlHolder.attr('rel'));
 				$('.' + fbOptions._dropPlaceHolderClass).remove();
 			  $('<div></div>').addClass(fbOptions._dropPlaceHolderClass)
-			   .css('height', '30px').insertAfter($prevCtrlHolder);		  
+			   .css('height', '30px').insertAfter($prevCtrlHolder);
 			} else {
-				var $ctrlHolder = $('.' + $.fb.fbWidget.prototype.options._styleClass + 
-						   ':visible:not(.' + fbOptions._draggableClass + '):first');		
-				
+				var $ctrlHolder = $('.' + $.fb.fbWidget.prototype.options._styleClass +
+						   ':visible:not(.' + fbOptions._draggableClass + '):first');
+
 				if ($ctrlHolder.length && ui.offset.top < $ctrlHolder.offset().top) {
 					$('.' + fbOptions._dropPlaceHolderClass).remove();
 				}
-			} 
+			}
          },
     stop: function(event, ui) {
 	   $('.' + $.fb.formbuilder.prototype.options._dropPlaceHolderClass).remove();
         }
-	  });	   
+	  });
    },
-   _isFieldSettingsTabCanOpen: function(event, ui) { 
+   _isFieldSettingsTabCanOpen: function(event, ui) {
 		if (ui.index == 1) { // Field Settings tab selected
 			var options = $.fb.formbuilder.prototype.options;
 			var canOpen = true;
@@ -178,9 +168,9 @@ var FormBuilder = {
 							},
 							style: {
 								widget: true,
-								classes: 'ui-tooltip-shadow ui-tooltip-rounded', 
+								classes: 'ui-tooltip-shadow ui-tooltip-rounded',
 								tip: true
-							}								   
+							}
 			    });
 				canOpen = false;
 			} else if ($(options._builderForm + ' .' + $.fb.fbWidget.prototype.options._selectedClass).length === 0) {
@@ -195,10 +185,10 @@ var FormBuilder = {
 							hide: 'click',
 							style: {
 								widget: true,
-								classes: 'ui-tooltip-shadow ui-tooltip-rounded', 
+								classes: 'ui-tooltip-shadow ui-tooltip-rounded',
 								tip: true
-							}								   
-			    });	
+							}
+			    });
 				canOpen = false;
 			}
 			if (!canOpen) {
@@ -206,7 +196,7 @@ var FormBuilder = {
 				$(this).tabs('select', 0);
 			}
 			return canOpen;
-		} 
+		}
 	 },
   _initBuilderPanel: function() {
 	  this._initFormSettings();
@@ -216,7 +206,7 @@ var FormBuilder = {
 	  } else {
 			$('input:not(div.buttons input, #id)').attr("disabled", true);
 			$('select:not(#language)').attr("disabled", true);
-			$('textarea').attr("disabled", true);	    	
+			$('textarea').attr("disabled", true);
 	    }
 	  this._initWidgetsEventBinder();
    },
@@ -232,7 +222,7 @@ var FormBuilder = {
 	  			 $('.' + fbOptions._dropPlaceHolderClass).remove();
 	  			 var $widget = ui.draggable.data('fb' + ui.draggable.attr('id'));
 		    	 var $prevCtrlHolder = $.fb.formbuilder.prototype._getPreviousCtrlHolder(ui);
-		    	 var $ctrlHolder = $widget._createFbWidget(event); 
+		    	 var $ctrlHolder = $widget._createFbWidget(event);
 		    	 var $elements;
 		    	 if ($prevCtrlHolder) {
 	  			   $widget._log('$prevCtrlHolder.text() = ' + $prevCtrlHolder.text());
@@ -240,9 +230,9 @@ var FormBuilder = {
 	  			   $elements = $prevCtrlHolder.next().nextAll(':visible'); // $ctrlHolder.next() not works. :visible to prevent select the invisible ctrlHolder and emptyBuilderPanel
 	  		   } else {
 	  			   $(fbOptions._emptyBuilderPanel + ':visible').hide();
-	  			   $elements = $('.' + $.fb.fbWidget.prototype.options._styleClass + 
+	  			   $elements = $('.' + $.fb.fbWidget.prototype.options._styleClass +
 	  					   ':visible:not(.' + fbOptions._draggableClass + ')', $formControls);
-	  				 $formControls.prepend($ctrlHolder).sortable('refresh');				  		        	   
+	  				 $formControls.prepend($ctrlHolder).sortable('refresh');
 	  		          }
 		    	 $ctrlHolder.toggle('slide', {direction: 'up'}, 'slow');
 
@@ -254,16 +244,16 @@ var FormBuilder = {
 						$elements.each(function(index) {
 						  $.fb.formbuilder.prototype._increaseSequence($(this));
 						 });
-			    	 } 
+			    	 }
 	  		    }
-	  		}  		
-	    });	   
+	  		}
+	    });
    },
   _getPreviousCtrlHolder: function(ui) {
-		var $ctrlHolders = $('.' + $.fb.fbWidget.prototype.options._styleClass + 
+		var $ctrlHolders = $('.' + $.fb.fbWidget.prototype.options._styleClass +
 				   ':visible:not(.' + $.fb.formbuilder.prototype.options._draggableClass + ')');
 		var $this, $prevCtrlHolder;
-		  
+
 		$ctrlHolders.each(function(i) {
 			$this = $(this);
 			$.fb.formbuilder.prototype._log(i + ') top = ' + $this.offset().top);
@@ -274,7 +264,7 @@ var FormBuilder = {
 			}
 		});
 		return $prevCtrlHolder;
-  },  
+  },
   _initFormSettings: function() {
 	  var $fbWidget = $.fb.fbWidget.prototype;
 	  var options = this.options;
@@ -300,16 +290,16 @@ var FormBuilder = {
 		} else {
 			options.settings = $.parseJSON(unescape($settings.val()));
 			settings = options.settings[$language.val()];
-		}	  
-		
+		}
+
 		$fbWidget._log('settings.name = ' + settings.name);
-	  
+
 		var $name = $fbWidget._label({ label: 'Name', name: 'form.name' })
 		       .append('<input type="text" id="form.name" value="' + settings.name + '" />');
 		$('input', $name).keyup(function(event) {
 				var value = $(this).val();
 				$fbWidget._log('options.disabledNameChange = ' + options.disabledNameChange);
-				if (!options.disabledNameChange && 
+				if (!options.disabledNameChange &&
 						$.inArray($language.val(), options._languagesSupportIdGeneration) > -1) {
 					var name = $fbWidget._propertyName(value);
 		      $('#name',$builderForm).val(name).change();
@@ -318,12 +308,12 @@ var FormBuilder = {
 				settings.name = value;
 				$(settings.heading, $formHeading).text(value);
 				$this._updateSettings($this);
-		 });			  
-		
+		 });
 
-		 var $heading = $fbWidget._label({ 
-			  label: 'Heading', 
-			  name: 'form.heading' 
+
+		 var $heading = $fbWidget._label({
+			  label: 'Heading',
+			  name: 'form.heading'
 	    }).append('<select> \
 				<option value="h1">Heading 1</option> \
 				<option value="h2">Heading 2</option> \
@@ -332,7 +322,7 @@ var FormBuilder = {
 				<option value="h5">Heading 5</option> \
 				<option value="h6">Heading 6</option> \
 			</select>');
-		
+
 		 $('select', $heading)
 		    .val(settings.heading)
 				.attr('id', 'form.heading') // unable to set value if specify in select tag
@@ -341,19 +331,19 @@ var FormBuilder = {
 	    	  var text = $(settings.heading, $formHeading).text();
 	    	  var $heading = $('<' + heading + ' class="heading">' + text + '</' + heading + '>');
 	    	  if (settings.styles.fontStyles[0] === 0) {
-	    		  $heading.css('fontWeight', 'normal');  
+	    		  $heading.css('fontWeight', 'normal');
 	    	  }
 	    	  if (settings.styles.fontStyles[1] == 1) {
 	    		  $heading.css('fontStyle', 'italic');
-	    	  }	    	  
+	    	  }
 	    	  if (settings.styles.fontStyles[2] == 1) {
 	    		  $heading.css('textDecoration', 'underline');
-	    	  }	    		    	  
+	    	  }
 	    	  $(settings.heading, $formHeading).replaceWith($heading);
 	    	  settings.heading = heading;
 	    	  $this._updateSettings($this);
 	            });
-				
+
 		var $horizontalAlignment = $fbWidget._horizontalAlignment({ name: 'form.horizontalAlignment', value: settings.classes[0] });
 		$('select', $horizontalAlignment).change(function(event) {
 					var value = $(this).val();
@@ -361,13 +351,13 @@ var FormBuilder = {
 					settings.classes[0] = value;
 					$this._updateSettings($this);
 				});
-			
+
 		settings.styles.fontFamily = settings.styles.fontFamily == 'default' ? options._fontFamily : settings.styles.fontFamily;
 		settings.styles.fontSize = settings.styles.fontSize == 'default' ? options._fontSize : settings.styles.fontSize;
-		var $fontPanel = $fbWidget._fontPanel({ 
-			      fontFamily: settings.styles.fontFamily, 
-			      fontSize: settings.styles.fontSize, 
-            fontStyles: settings.styles.fontStyles, 
+		var $fontPanel = $fbWidget._fontPanel({
+			      fontFamily: settings.styles.fontFamily,
+			      fontSize: settings.styles.fontSize,
+            fontStyles: settings.styles.fontStyles,
             idPrefix: 'form.', nofieldset: true });
 
 		$("input[id$='form.bold']", $fontPanel).change(function(event) {
@@ -389,7 +379,7 @@ var FormBuilder = {
 				settings.styles.fontStyles[1] = 0;
 			}
 			$this._updateSettings($this);
-		});		
+		});
 		$("input[id$='form.underline']", $fontPanel).change(function(event) {
 			if ($(this).attr('checked')) {
 				$(settings.heading, $formHeading).css('textDecoration', 'underline');
@@ -400,38 +390,38 @@ var FormBuilder = {
 			}
 			$this._updateSettings($this);
 		});
-		
+
 		$("input[id$='form.fontFamily']", $fontPanel).change(function(event) {
 			var value = $(this).val();
 			$builderPanel.css('fontFamily', value);
 			settings.styles.fontFamily = value;
 			$this._updateSettings($this);
-		});		
-		
+		});
+
 
 		$("select[id$='form.fontSize']", $fontPanel).change(function(event) {
 			var value = $(this).val();
 			$builderPanel.css('fontSize', value + 'px');
 			settings.styles.fontSize = value;
 			$this._updateSettings($this);
-		});	
-				
+		});
+
 		if (options.settings.styles.color == 'default') {
 			options.settings.styles.color = options._color;
 		}
-		
+
 		if (options.settings.styles.backgroundColor == 'default') {
 			options.settings.styles.backgroundColor = options._backgroundColor;
 		}
-		var $colorPanel = $fbWidget._colorPanel({ color: options.settings.styles.color, 
+		var $colorPanel = $fbWidget._colorPanel({ color: options.settings.styles.color,
 			       backgroundColor: options.settings.styles.backgroundColor, idPrefix: 'form.' });
-		
+
 		$("input[id$='form.color']", $colorPanel).change(function(event) {
 			var value = $(this).data('colorPicker').color;
 			$builderPanel.css('color','#' + value);
 			options.settings.styles.color = value;
 			$this._updateSettings($this);
-		});		
+		});
 
 		$("input[id$='form.backgroundColor']", $colorPanel).change(function(event) {
 			var value = $(this).data('colorPicker').color;
@@ -439,13 +429,13 @@ var FormBuilder = {
 			$builderPanel.css('backgroundColor','#' + value);
 			options.settings.styles.backgroundColor = value;
 			$this._updateSettings($this);
-		});			
-		
+		});
+
 		$formSettingsLanguageSection.append($fbWidget._oneColumn($name))
 		   .append($fbWidget._twoColumns($heading, $horizontalAlignment))
 		   .append($fontPanel);
 		$formSettingsGeneralSection.append($colorPanel);
-	 
+
    },
  _languageChange:function(event) {
 	 $.fb.formbuilder.prototype._log('languageChange(' + $(this).val() + ', ' + $('option:selected', this).text() +  ')');
@@ -458,12 +448,12 @@ var FormBuilder = {
 	  var $formSettingsLanguageSection = $(fbOptions._formSettingsLanguageSection);
 	  var $builderPanel = $(fbOptions._builderPanel);
 	  var settings, type, $widget, selected, fb;
-	  
+
 	  $("input[id$='form.name']", $formSettingsLanguageSection).val(formSettings.name);
-	  
-	  $("select[id$='form.heading'] option[value='" + formSettings.heading + "']", 
+
+	  $("select[id$='form.heading'] option[value='" + formSettings.heading + "']",
 			  $formSettingsLanguageSection).attr('selected', 'true');
-	  
+
 	  var $heading = $('<' + formSettings.heading + ' class="heading">' + formSettings.name + '</' + formSettings.heading + '>')
 	  .css('fontWeight', formSettings.styles.fontStyles[0] == 1 ? 'bold' : 'normal')
 	  .css('fontStyle', formSettings.styles.fontStyles[1] == 1 ? 'italic' : 'normal')
@@ -473,18 +463,18 @@ var FormBuilder = {
 	  $("input[id$='form.bold']", $formSettingsLanguageSection).attr('checked', formSettings.styles.fontStyles[0]);
 	  $("input[id$='form.italic']", $formSettingsLanguageSection).attr('checked', formSettings.styles.fontStyles[1]);
 	  $("input[id$='form.underline']", $formSettingsLanguageSection).attr('checked', formSettings.styles.fontStyles[2]);
-	  
+
 	  $formHeading.removeClass('leftAlign centerAlign rightAlign').addClass(formSettings.classes[0]);
-	  $("select[id$='form.horizontalAlignment'] option[value='" + formSettings.classes[0] + "']", 
+	  $("select[id$='form.horizontalAlignment'] option[value='" + formSettings.classes[0] + "']",
 			  $formSettingsLanguageSection).attr('selected', 'true');
-	  
+
 	  formSettings.styles.fontFamily = formSettings.styles.fontFamily == 'default' ? fbOptions._fontFamily : formSettings.styles.fontFamily;
 	  formSettings.styles.fontSize = formSettings.styles.fontSize == 'default' ? fbOptions._fontSize : formSettings.styles.fontSize;
 		$builderPanel.css('fontFamily', formSettings.styles.fontFamily);
 		$builderPanel.css('fontSize', formSettings.styles.fontSize + 'px');
 		$("select[id$='form.fontSize']", $formSettingsLanguageSection).val(formSettings.styles.fontSize);
 		$('.fontPicker', $formSettingsLanguageSection).fontPicker('fontFamily', formSettings.styles.fontFamily);
-		
+
 		$ctrlHolders.each(function(i) {
 		    var $widget = $(this);
 		    selected = $widget.attr('class').indexOf($.fb.fbWidget.prototype.options._selectedClass) > -1;
@@ -495,7 +485,7 @@ var FormBuilder = {
 					var $settings = $widget.find("input[id$='fields[" + $widget.attr('rel') + "].settings']");
 					// settings is JavaScript encoded when return from server-side
 					$widget.data('fbWidget', $.parseJSON(unescape($settings.val())));
-				}		    
+				}
 		    settings = $widget.data('fbWidget');
 		    $.fb.formbuilder.prototype._log(i + ') settings = ' + settings);
 		    type = $widget.find("input[id$='fields[" + $widget.attr('rel') + "].type']").val();
@@ -504,7 +494,7 @@ var FormBuilder = {
 		    fb = {target: $this, item: $widget, settings: settings[language]};
 		    fb.item.selected = selected;
 		    if (selected) { // refresh field settings tab
-		      $this._createFieldSettings(event, $widget); 
+		      $this._createFieldSettings(event, $widget);
 		        }
 		    $this._languageChange(event, fb);
 		});
@@ -512,34 +502,34 @@ var FormBuilder = {
  _updateSettings: function($this) {
 	 	$this._log('_updateSettings = ' + $.toJSON($this.options.settings));
 	  $('#settings').val($.toJSON($this.options.settings)).change();
-   } ,        
+   } ,
  _initWidgetsEventBinder: function() { // for widgets loaded from server
 	  var $ctrlHolders = $('.' + $.fb.fbWidget.prototype.options._styleClass);
 	  var size = $ctrlHolders.size();
-		if (size > 0) { 
+		if (size > 0) {
 			var $this, widget;
 			var fieldsUpdateStatus = ['name', 'settings', 'sequence'];
-			
+
 			$(this.options._emptyBuilderPanel + ':visible').hide();
 			$ctrlHolders.each(function(i) {
 			    $this = $(this);
 			    widget = $this.find("input[id$='fields[" + i + "].type']").val();
-			    $this.click($['fb']['fb' + widget].prototype._createFieldSettings);				
+			    $this.click($['fb']['fb' + widget].prototype._createFieldSettings);
 					for (var j = 0; j < fieldsUpdateStatus.length; j++) {
 						$this.find("input[id$='fields[" + i + "]." + fieldsUpdateStatus[j] + "']")
 						                  .change($.fb.fbWidget.prototype._updateStatus);
-					}	  
+					}
 			});
 			if (!this.options.readOnly) {
 			  $ctrlHolders.find(".closeButton").click($.fb.fbWidget.prototype._deleteWidget)
-			    .mouseover(function () { $('span', this).removeClass('ui-icon-close').addClass('ui-icon-circle-close'); }) 
+			    .mouseover(function () { $('span', this).removeClass('ui-icon-close').addClass('ui-icon-circle-close'); })
 			    .mouseout(function () { $('span', this).removeClass('ui-icon-circle-close').addClass('ui-icon-close'); });
 			}
 		}
   },
   _initSortableWidgets: function() {
 	  var $formControls = $(this.options._formControls);
-	  $formControls.sortable({ 
+	  $formControls.sortable({
 			axis: 'y',
 			cursor: 'move',
 			distance: 10,
@@ -555,9 +545,9 @@ var FormBuilder = {
 			},
 			update: $.fb.formbuilder.prototype._updateSequence
 			});
-		
+
 		// Making text elements, or elements that contain text, not text-selectable.
-	  $formControls.disableSelection();	  
+	  $formControls.disableSelection();
   },
   _updateSequence: function (event, ui) {
 		var $uiItem = $(ui.item);
@@ -568,34 +558,34 @@ var FormBuilder = {
 			var prevElementSelector = '[rel="' + ui.item.prevIndex + '"]';
 			if (moveDown) {
 		    $elements = $uiItem.prevUntil(prevElementSelector);
-		    $.fb.formbuilder.prototype._moveDown($uiItem, $elements);			    
+		    $.fb.formbuilder.prototype._moveDown($uiItem, $elements);
 			} else {
 				// set next widget's sequence as my sequence
 				$.fb.formbuilder.prototype._getSequence($uiItem).val(
-				    $.fb.formbuilder.prototype._getSequence($uiItem.next()).val()).change();						
-				$elements = $uiItem.nextUntil(prevElementSelector);  
+				    $.fb.formbuilder.prototype._getSequence($uiItem.next()).val()).change();
+				$elements = $uiItem.nextUntil(prevElementSelector);
 				$elements.each(function(index) {
 				  $.fb.formbuilder.prototype._increaseSequence($(this));
-				 });		
+				 });
 				// process the last one
 				$.fb.formbuilder.prototype._increaseSequence($(prevElementSelector));
 			}
 		} else {
 			$elements = $uiItem.prevAll();
-			$.fb.formbuilder.prototype._moveDown($uiItem, $elements);			
+			$.fb.formbuilder.prototype._moveDown($uiItem, $elements);
 		}
 	},
 	_init: function() {
 	  // called on construction and re-initialization
 		this._log('FormBuilder._init called.');
 		this.method1('calling from FormBuilder._init');
-	},        
+	},
 	destroy: function() {
     // called on removal
 		this._log('FormBuilder.destroy called.');
 
     // call the base destroy function.
-		$.Widget.prototype.destroy.call(this);		
+		$.Widget.prototype.destroy.call(this);
     },
   // _logging to the firebug's console, put in 1 line so it can be removed easily for production
   _log: function($message) { if (window.console && window.console.log) window.console.log($message); },
@@ -605,8 +595,8 @@ var FormBuilder = {
 		    $.fb.formbuilder.prototype._getSequence($widget.prev()).val()).change();
 	  $elements.each(function(index) {
 		  $.fb.formbuilder.prototype._decreaseSequence($(this));
-	    });	
-  }, 
+	    });
+  },
   _getSequence: function($widget) {
     	return $widget.find("input[id$='fields[" + $widget.attr('rel') + "].sequence']");
     },
@@ -623,7 +613,7 @@ var FormBuilder = {
 	    $sequence.val($sequence.val() - 1);
 	    $sequence.change();
 	  }
-   },  
+   },
 	method1: function(params) {
     	// plugin specific method
 		this._log('FormBuilder.method1 called. params = ' + params);
