@@ -25,6 +25,6 @@ That early stadium where everything is still described as 'should'
 License
 ========
 
-Everything before 2012 Apache License copyright by limcheekin
+Everything before 2012 Apache License copyright by limcheekin  
 Everything after 2011 Apache License copyright by konijn aka Tom Demuyt
 
