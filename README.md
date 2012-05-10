@@ -3,12 +3,12 @@ Quintet
 
 This is a fork of jquery-form-builder-plugin
 The intent is to use
- 1) jQuery 
- 2) jQuery UI 
- 3) Bootstrap 
+ 1. jQuery 
+ 2. jQuery UI 
+ 3. Bootstrap 
  to produce 
- 4) Forms 
- 5) Views
+ 4. Forms 
+ 5. Views
  hence 'Quintet'.
 
 Furthermore, this code should stand on it's own, when detecting the protocol 'file://' it should use localData as a database.
