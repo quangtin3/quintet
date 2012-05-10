@@ -14,13 +14,14 @@ to produce
 
 hence 'Quintet'.
 
-Furthermore, this code should stand on it's own, when detecting the protocol 'file://' it should use localData as a database.
+Furthermore, this code should stand on it's own, when detecting the protocol 'file://' it should use localData as a database.  
 One should be able to take this code and start connecting to any backend.
 
 Status
 =======
 
-That early stadium where everything is still described as 'should'
+That early stadium where everything is still described as 'should'.  
+Also, after introducing the bootstrap css file it looks uglier, not for the faint of heart until some more work is done.
 
 License
 ========
