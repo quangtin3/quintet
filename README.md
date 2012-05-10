@@ -6,10 +6,10 @@ The intent is to use
  1. jQuery 
  2. jQuery UI 
  3. Bootstrap 
- to produce 
+    to produce 
  4. Forms 
  5. Views
- hence 'Quintet'.
+    hence 'Quintet'.
 
 Furthermore, this code should stand on it's own, when detecting the protocol 'file://' it should use localData as a database.
 One should be able to take this code and start connecting to any backend.
