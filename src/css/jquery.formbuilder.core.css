@@ -1,30 +1,30 @@
 /*
- * Styles of main component of JQuery Form Builder plugin, 
- * the Form Builder container itself. 
- * 
+ * Styles of main component of JQuery Form Builder plugin,
+ * the Form Builder container itself.
+ *
  * Revision: @REVISION
  * Version: @VERSION
  * Copyright 2011 Lim Chee Kin (limcheekin@vobject.com)
  *
  * Licensed under Apache v2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  *
- * Date: 
+ * Date:
  */
- 
+
 /* REF: http://www.thesitewizard.com/css/design-2-column-layout.shtml */
 #builderPalette {
   float: left;
   width: 325px;
   padding: 0;
-}  
-  
+}
+
 #builderForm {
   margin-left: 340px;
 }
 
 #builderPanel {
-  border: 1px solid #ccc;  
-  min-height: 415px;	  
+  border: 1px solid #ccc;
+  min-height: 415px;
   padding: 1em;
 }
 
@@ -35,7 +35,7 @@
     margin-top: 5px;
     overflow: hidden;
     padding: 0;
-}       
+}
 
 #footer {
 	clear: both;
@@ -49,7 +49,7 @@
 
 .floatingPanel {
 
-}		
+}
 
 #addField, #fieldSettings, #formSettings {
   height: 430px
@@ -58,7 +58,7 @@
 #paletteTabs {
 		font-size: 12px;
 		margin: 0;
-		width: 325px;		
+		width: 325px;
 }
 
 /* Add Field Panel */
@@ -77,15 +77,15 @@
 }
 
 #builderPanel fieldset {
-  min-height: 355px; 
+  min-height: 355px;
 }
 
 /* for drag and drop */
 div.ctrlHolder { padding: 1em }
 
 .uniForm .ctrlHolder {
-	 position:relative; 
-	 cursor: pointer; 
+	 position:relative;
+	 cursor: pointer;
 /*	 padding: 1em 1.5em 1em 1em;*/
 }
 
@@ -114,7 +114,7 @@ div.ctrlHolder { padding: 1em }
 /*#builderPalette fieldset div.legend { text-align: right }*/
 
 .twoCols, .threeCols { clear: both; padding:0; margin: 0;}
-  	
+
 div.labelOnTop { padding-top: 0em; padding-bottom: 2.5em; } /*border-bottom: 1px solid #C0C0C0;*/
 
 div.labelOnTop textarea { padding: 0; margin-bottom: 0.5em }
@@ -130,17 +130,17 @@ div.labelOnTop textarea { padding: 0; margin-bottom: 0.5em }
 div.labelOnTop label {
    float: left;
 }
-    
+
 div.labelOnTop input, div.labelOnTop select, div.labelOnTop textarea {
    float: left;
    width: 98%;
     }
-    
+
 .twoCols .col1 {
  float: left;
  width: 48%;
-  }     
-  
+  }
+
 div.noPaddingBottom { padding-bottom: 0; }
 
 .twoCols .col2 {
@@ -154,22 +154,22 @@ div.noPaddingBottom { padding-bottom: 0; }
 }
 
 .threeCols .col2 {
-  display: table-cell;	
+  display: table-cell;
 	margin-left: 2%;
 	width: 32%;
  }
- 
+
 .threeCols .col3 {
-  display: table-cell;	
+  display: table-cell;
 	margin-left: 2%;
 	width: 32%;
  }
- 
+
 /* Color panel: color picker styles */
-#field\.backgroundColor, #field\.color, 
+#field\.backgroundColor, #field\.color,
 #form\.backgroundColor, #form\.color  { width: 8em }
 
-#field\.label\.backgroundColor, #field\.label\.color, 
+#field\.label\.backgroundColor, #field\.label\.color,
 #field\.value\.backgroundColor, #field\.value\.color,
 #field\.description\.backgroundColor, #field\.description\.color { width: 4em }
 
@@ -178,7 +178,7 @@ div.noPaddingBottom { padding-bottom: 0; }
 
 .floatLeft { float:left }
 
-/* Font Panel 
+/* Font Panel
 From: http://stackoverflow.com/questions/2611083/css-equivalent-of-table-rowspan-with-fluid-height
 */
 .twoRowsOneRow { display: table }
@@ -188,3 +188,13 @@ From: http://stackoverflow.com/questions/2611083/css-equivalent-of-table-rowspan
 
 /* Form Settings */
 #form\.heading, #form\.horizontalAlignment { width: 100% }
+
+
+
+/* 2012 classes */
+
+.hidden { display : none }
+
+
+
+
