@@ -1,5 +1,29 @@
 
-* Make UI usable with bootstrap
-* Add many more widgets
+Guidelines
+
+* Make and keep UI usable with bootstrap
 * Comment code much more
+
+Long Term
+
+* Add many more widgets
 * Set up demo site
+
+Short Term
+
+* Wire field settings to the options
+
+DONE 
+
+May 13 2012
+
+* Connected options for single text field to the generation of the widget
+
+May 12 2012
+
+* Set legend for 'Language' maybe UI or Look and Feel
+* Legend width should not be set
+* Fieldset padding should not be set for stuff to fit, but it is ugly
+* FieldSettings should not have height 600 pixels, stuff just escapes at that size
+
+
