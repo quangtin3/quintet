@@ -13,6 +13,7 @@
 <title>Quintet</title>
 
 <link type="text/css" href="css/quintet.css" media="screen" rel="stylesheet" />
+<link type="text/css" href="../lib/css/fontpicker.css" media="screen" rel="stylesheet" />
 <link type="text/css" href="../lib/bootstrap/css/bootstrap.css" media="screen" rel="stylesheet" />
 
 <script type="text/javascript" src="../lib/js/jquery-1.7.2.js"></script>
@@ -20,7 +21,11 @@
 <script type="text/javascript" src="../lib/bootstrap/js/bootstrap.js"></script>
 <script type="text/javascript" src="../lib/js/sprintf-0.7-beta1.js"></script>
 
+<script type="text/javascript" src="../lib/js/jquery.fontpicker-regios.js"></script>
+
+<script type="text/javascript" src="js/js.js"></script>
 <script type="text/javascript" src="js/quintet.js"></script>
+<script type="text/javascript" src="js/quintet.htmlbuilder.js"></script>
 <script type="text/javascript" src="js/quintet.singletextfield.js"></script>
 
 
@@ -28,6 +33,24 @@
 $(function()
 {
 	quintet.init();
+
+$('#field\\.font').fontPickerRegios({ 
+	defaultFont: 'Helvetica Neue',	
+	callbackFunc: changeFont,
+	selid: 'field\\.font',
+});
+
+$('#font').fontPickerRegios({ 
+	defaultFont: 'Helvetica Neue',	
+	callbackFunc: changeFont,
+	selid: 'font',
+});
+
+function changeFont(fontFamily)
+{	  
+  $('#sampletext').css('fontFamily', fontFamily);  
+}
+
 });
 </script>
 </head>
@@ -57,7 +80,7 @@ $(function()
   			<ul>
   		</div>
   		<div class="tab-pane" id="settings">
-
+<!--
   			<h3>Basics</h3>
   			<div class="well">
   			<table  >
@@ -81,8 +104,7 @@ $(function()
 
   			<tr>
   				<td style="width:40%">
-  					<div rel="field.fontFamily" style="font-family: Times; ">Times</div>
-						<input type="hidden" id="field.fontFamily" value="Times">
+						<div id='fontselector' style="border-radius: 3px;"></div>	
 					</td>
 					<td>
 						<select id="field.fontSize" style="width:150px">
@@ -124,7 +146,7 @@ $(function()
   				<table>
 
   				<tr>
-  					<td><input type="checkbox" id="field.required">&nbsp;Required&nbsp;</td>
+  					<td><input type="checkbox" id="field.required">&nbsp;Req.&nbsp;</td>
   					<td>
   					<select id="field.restriction" style="width: 99%">
   						<option value="no">any character</option>
@@ -137,14 +159,76 @@ $(function()
   				</table>
   			</div>
 
-
+-->
 
   		</div>
-  		<div class="tab-pane" id="form">Form</div>
-  	</div>
+  		<div class="tab-pane" id="form">
 
-  </div>
-    <div id="rightColumn" class="panel ui-sortable ui-droppable"></div>
+  			<h3>Basics</h3>
+  			<div class="well">
+  			<table  >
+
+  			<tr>
+  				<td><label for="field.label">Label</label></td>
+  				<td><input type="text" id="field.label" style="width:100%"></td>
+  			</tr>
+
+  			<tr>
+  				<td><label for="field.value">Value</label></td>
+  				<td><input type="text" id="field.value" style="width:100%"></td>
+  			</tr>
+
+  			<tr>
+  			<td  colspan="2">
+  				<label for="field.description">Description</label>
+  				<textarea id="field.description" style="width:100%"></textarea>
+  				</td>
+  			</tr>
+
+  			<tr>
+  				<td style="width:40%">
+						<div id='fontselector' class="fontselector" style="border-radius: 3px;width:100px"></div>	
+					</td>
+					<td>
+						<select id="field.fontSize" style="width:100px">
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13" selected>13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+							<option value="16">16</option>
+							<option value="17">17</option>
+							<option value="18">18</option>
+							<option value="20">20</option>
+							<option value="22">22</option>
+							<option value="24">24</option>
+							<option value="28">28</option>
+							<option value="32">32</option>
+						</select>
+					</td>
+
+				</tr>
+
+				<tr>
+					<td colspan="2">
+							<input type="checkbox" id="field.bold">&nbsp;Bold&nbsp;
+							<input type="checkbox" id="field.italic">&nbsp;Italic&nbsp;
+							<input type="checkbox" id="field.underline">&nbsp;Underline
+					</td>
+				</tr>
+
+				</table>
+
+				</div>
+
+
+			</div>
+		</div>
+
+	</div>
+		<div id="rightColumn" class="panel ui-sortable ui-droppable"></div>
 </div>
 
 </body>

@@ -6,6 +6,8 @@ quintet.registerWidget
 
 		id : "line",
 
+		/* Mandatory : all widgets must have a createOptions */
+		/* These options will get serialized and stored in the backend for actual use */
 		createOptions : 	function()
 		{
 			var name = "widgetLine";
@@ -17,7 +19,9 @@ quintet.registerWidget
 				hint : "This is a single field text",
 				font : "default",
 				size : 16,
-				biu : [ false , false , false ], //bold italic underline
+				bold : false,
+				italic : false,
+				underline : false,
 				required : counter == 1 ? true : false,
 				filter : "any",
 				labelColor : "default",
@@ -28,6 +32,8 @@ quintet.registerWidget
 			return o;
 		},
 
+		/* Mandatory : all widgets must have a create */
+		/* This is what the drag helper function calls, magic will place then the helper in the sortable form */
 		create : function( options )
 		{
 			//get options or create new options
@@ -46,9 +52,9 @@ quintet.registerWidget
 			//options._style will get modified for later use
 			quintet.considerStyle( options , 'font-family' , options.font , "default" );
 			quintet.considerStyle( options , 'font-size'   , options.size , 8 );
-			quintet.considerStyle( options , 'font-weight' , options.biu[0]?"bold":"normal" , "normal" );
-			quintet.considerStyle( options , 'font-style'  , options.biu[1]?"italic":"normal" , "normal" );
-			quintet.considerStyle( options , 'font-decoration' , options.biu[2]?"underline":"none" , "none" );
+			quintet.considerStyle( options , 'font-weight' , options.bold?"bold":"normal" , "normal" );
+			quintet.considerStyle( options , 'font-style'  , options.italic?"italic":"normal" , "normal" );
+			quintet.considerStyle( options , 'font-decoration' , options.underline?"underline":"none" , "none" );
 
 			console.log( options._style );
 
