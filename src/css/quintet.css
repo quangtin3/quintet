@@ -1,0 +1,17 @@
+
+* { text-indent : 10px; }                                      /* All elements get indented by 10 pixels */
+
+/***/
+/* Widget Section , this will be required when not building forms as well */
+/***/
+#leftColumn  { float : left; width: 320px; }                   /* Top level left column is 320 wide */
+#rightColumn { margin-left: 320px; }                           /* Top level right column takes the rest of the screen */
+.panel       { min-height:600px;border: 1px solid lightgrey; } /* Top level panels must be a least 600 high and have a light grey border */
+
+
+/***/
+/* Widget Section , this will be required when not building forms as well */
+/***/
+
+.formHint {	font-size: .85em;	color: #777;	margin-left:20px; }  /* The form hint text behind a single line text*/
+
