@@ -386,6 +386,7 @@ var FbWidget = {
  		var o = $.extend({}, options);
  		this._log('fontPicker(' + $.toJSON(o) + ')');
  		o.value = o.value != 'default' ? o.value : this._getFbOptions()._fontFamily;
+ 		o.nobreak = true;
  		if (!o.label) o.label = 'Font';
 		var $fontPicker = this._label(o).append('<div class="fontPicker" rel="' + o.name + '"></div>');
 

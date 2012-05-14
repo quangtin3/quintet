@@ -14,7 +14,7 @@
 
 var FormBuilder = {
   options: { // default options. values are stored in prototype
-		fields: 'PlainText, SingleLineText, EmailText',
+		fields: 'PlainText,SingleLineText,EmailText',
 		tabSelected: 0,
 		readOnly: false,
 		tabDisabled: [],
@@ -109,7 +109,7 @@ var FormBuilder = {
 	  for (i = 0; i < length; i++) {
 		  widgetOptions = $['fb']['fb' + $.trim(widgets[i])].prototype.options;
 		  widget = $('<a id="' + widgetOptions._type +  '" href="#" class="fbWidget btn">' + widgetOptions.name + '</a>');
-      widget.button()['fb' + widgetOptions._type]()
+		  widget.button()['fb' + widgetOptions._type]()
       .appendTo(widgetOptions.belongsTo);
       this._initDraggable(widget, widgetOptions._type);
 	    }
