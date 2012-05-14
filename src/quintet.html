@@ -1,0 +1,143 @@
+<!--
+* Quintet - WYSIWYG Web Form Builder
+* http://code.google.com/p/jquery-form-builder-plugin/
+*
+* Copyright 2012 Tom Demuyt ( konijn@gmail.com )
+*
+* Licensed under Apache v2.0 http://www.apache.org/licenses/LICENSE-2.0.html
+!-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Quintet</title>
+
+<!-- TODO : printf !! Amen! -->
+
+<link type="text/css" href="../lib/bootstrap/css/bootstrap.css" media="screen" rel="stylesheet" />
+
+<script type="text/javascript" src="../lib/js/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../lib/js/jquery-ui-1.8.20.custom.js"></script>
+<script type="text/javascript" src="../lib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="../lib/js/sprintf-0.7-beta1.js"></script>
+
+<script type="text/javascript" src="js/quintet.js"></script>
+<script type="text/javascript" src="js/quintet.singletextfield.js"></script>
+
+<style type="text/css">
+
+* { text-indent : 10px; }                                  /* All elements get indented by 10 pixels */
+#leftColumn  { float : left; width: 320px; }               /* Top level left column is 320 wide */
+#rightColumn { margin-left: 320px; }                       /* Top level right column takes the rest of the screen */
+.panel { min-height:600px;border: 1px solid lightgrey; }   /* Top level panels must be a least 600 high and have a light grey border */
+
+.formHint {
+	font-size: .85em;
+	color: #777;
+	margin-left:20px;
+}
+
+
+
+
+</style>
+
+
+<script type="text/javascript">
+
+
+$(function() {
+
+		//Do the init thing
+		quintet.init();
+
+
+		//For each button, make it draggable with a specific helper
+		//$("#line").draggable( { connectToSortable: "#rightColumn" , refreshPositions: true , helper : blurb2 , } );
+		//$("#text").draggable( { connectToSortable: "#rightColumn" , refreshPositions: true , helper : blurb3 , } );
+
+
+
+
+
+
+
+
+		function createSingleTextField()
+		{
+			var options = createSingleFieldTextOptions();
+
+			//Store with http://api.jquery.com/jQuery.data/
+			//Also, var user = { name: 'Dolly' }; sprintf('Hello %(name)s', user); // Hello Dolly
+
+			var q = $('<div>' +
+				       		'<a class="close" href="#">&times;</a>' +
+				       		'<div class="widgetLine">' +
+				       			'<label><em>*</em><span>Single Line Text 5</span></label>' +
+				       			'<input type="text" class="textInput" value="data">' +
+				       			'<span class="formHint">Info about the text field</span>' +
+				       		'</div>' +
+				       	'</div>');
+
+			jQuery.data(q[0], "options", options );
+
+		}
+
+		function blurb3()
+		{
+			return $('<div>' +
+				       		'<a class="close" href="#">&times;</a>' +
+				       		'<div>' +
+				       			'Explanation text' +
+				       		'</div>' +
+				       	'</div>');
+		}
+
+
+ });
+</script>
+<style type="text/css">
+
+
+</style>
+</head>
+
+<body>
+
+
+
+<div style="margin:5px"><h1>Quintet</h1></div>
+<div id="Container">
+	<div id="leftColumn"  class="panel">
+
+		<ul class="nav nav-tabs" id="tabs">
+  		<li><a href="#fields"   data-toggle="tab">Add field</a></li>
+  		<li><a href="#settings" data-toggle="tab">Field settings</a></li>
+  		<li><a href="#form"     data-toggle="tab">Form</a></li>
+  	</ul>
+
+  	<div class="tab-content">
+  		<div class="tab-pane active" id="fields">
+  			<ul style="list-style-type: none;">
+	  			<li><b>Standard Fields</b></li>
+	  			<li>&nbsp;</li>
+	  			<li><div id="line" class="btn">Single line field</div><br></li>
+	  			<li>&nbsp;</li>
+	  			<li><b>Fancy stuff</b><br></li>
+	  			<li>&nbsp;</li>
+	  			<li><div id="text" class="btn">Explanation Text</div><br></li>
+  			<ul>
+  		</div>
+  		<div class="tab-pane" id="settings">Settings</div>
+  		<div class="tab-pane" id="form">Form</div>
+  	</div>
+
+  </div>
+    <div id="rightColumn" class="panel ui-sortable ui-droppable"></div>
+</div>
+
+
+
+
+</body>
+</html>
