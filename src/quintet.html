@@ -33,24 +33,6 @@
 $(function()
 {
 	quintet.init();
-
-$('#field\\.font').fontPickerRegios({ 
-	defaultFont: 'Helvetica Neue',	
-	callbackFunc: changeFont,
-	selid: 'field\\.font',
-});
-
-$('#font').fontPickerRegios({ 
-	defaultFont: 'Helvetica Neue',	
-	callbackFunc: changeFont,
-	selid: 'font',
-});
-
-function changeFont(fontFamily)
-{	  
-  $('#sampletext').css('fontFamily', fontFamily);  
-}
-
 });
 </script>
 </head>
@@ -104,7 +86,7 @@ function changeFont(fontFamily)
 
   			<tr>
   				<td style="width:40%">
-						<div id='fontselector' style="border-radius: 3px;"></div>	
+						<div id='fontselector' style="border-radius: 3px;"></div>
 					</td>
 					<td>
 						<select id="field.fontSize" style="width:150px">
@@ -187,7 +169,7 @@ function changeFont(fontFamily)
 
   			<tr>
   				<td style="width:40%">
-						<div id='fontselector' class="fontselector" style="border-radius: 3px;width:100px"></div>	
+						<div id='fontselector' class="fontselector" style="border-radius: 3px;width:100px"></div>
 					</td>
 					<td>
 						<select id="field.fontSize" style="width:100px">

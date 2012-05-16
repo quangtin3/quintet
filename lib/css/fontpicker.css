@@ -1,6 +1,6 @@
 .fontselector {
   width: 130px;
-  height: 15px;
+  height: 20px;
   padding: 1px;
   border: solid 1px #cecece;
   background-color: #ffffee;
@@ -15,6 +15,7 @@
 	padding-bottom: 3px;
 	vertical-align: middle;
 	text-indent: 0px;
+	margin-bottom: 9px;
 }
 
 #fontbox {

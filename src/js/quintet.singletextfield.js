@@ -27,9 +27,51 @@ quintet.registerWidget
 				labelColor : "default",
 				valueColor : "default",
 				hintColor  : "default",
-				name : name,
+				name : name, //<- TODO , name probably is pointless
+				id : this.id,
 			};
 			return o;
+		},
+
+		//Really, I am expecting the id to be
+		//+1 for innerHTML
+		createOptionsUI : function ( id , element )
+		{
+			$("#"+id)[0].innerHTML =
+				quintet.htmlbuilder
+				.clear()
+				.h3("Basics")
+				.well()
+					.table()
+						.row()
+							.cell().label("label")
+							.cell().textInput("label")
+						.row()
+							.cell().label("value")
+							.cell().textInput("value")
+						.row()
+							.cell().colspan(2).label("hint").textArea("hint")
+						.row()
+							.cell().fontSelector("font")
+							.cell().sizeSelector("size")
+						.row()
+							.cell().colspan(2)
+								.checkbox("bold")
+								.checkbox("italic")
+								.checkbox("underline")
+				.h3("Value")
+				.well()
+					.table()
+						.row()
+							.cell().checkbox("required")
+							.cell().dropdown("filter" , "Any,Number,Text").style("width:100px")
+				.html;
+
+				$('#field\\.font').fontPickerRegios({
+						defaultFont: 'Helvetica Neue',
+						callbackFunc: function(){},
+						selid: 'field\\.font',
+				});
 		},
 
 		/* Mandatory : all widgets must have a create */
@@ -56,13 +98,13 @@ quintet.registerWidget
 			quintet.considerStyle( options , 'font-style'  , options.italic?"italic":"normal" , "normal" );
 			quintet.considerStyle( options , 'font-decoration' , options.underline?"underline":"none" , "none" );
 
-			console.log( options._style );
+			//console.log( options._style );
 
 			//Contrary to the original, I believe this to be
 			//more maintainable than coding all this with DOM manipulation
 
 			var s =  sprintf('<div>%(_closeButton)s' +
-				       		        '<div class="%(name)s">' +
+				       		        '<div class="%(id)s widget">' +
 				       			        '<label>%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
 				       			        '<input type="text" class="textInput" %(_valueColor)s value="%(value)s">' +
 				       			        '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +

@@ -1,0 +1,68 @@
+<!DOCTYPE hmtl>
+<html>
+<head>
+<title>Documentation for Quintet</title>
+<link type="text/css" href="../lib/bootstrap/css/bootstrap.css" media="screen" rel="stylesheet" />
+
+</head>
+<body>
+
+<pre>
+
+<h3>Quintet</h3>
+
+<u>What is it ?</u>
+
+This is a fork of <a href='http://code.google.com/p/jquery-form-builder-plugin/'>jquery-form-builder-plugin</a> by <a href='https://github.com/limcheekin'>limcheekin</a>, the intent is to use
+
+1) jQuery
+2) jQuery UI
+3) Bootstrap
+
+to produce
+
+4) Forms
+5) Views
+
+hence 'Quintet'.
+
+Furthermore, this code should stand on it's own, when detecting the protocol 'file://' it should use localData as a database.
+One should be able to take this code and start connecting to any backend.
+
+<u>Status</u>
+
+That early stadium where everything is still described as 'should'.
+Also, after introducing the bootstrap css file it looks uglier, not for the faint of heart until some more work is done.
+
+<u>License</u>
+
+Everything before 2012 Apache License copyright by limcheekin
+Everything after 2011 Apache License copyright by konijn aka Tom Demuyt
+
+<u>Todo</u>
+
+The todo can be found in the root ( TODO.txt )
+
+<u>Philosophy</u>
+
+The same set of javascript files should be used for form building, view building and actually serving the forms and views.
+Adding new widgets should be accomplished by adding new quintet.<widget>.js files, preferably starting from cloning quintet.singlefieldtext.js
+Every widget javascript registers itself, so there is no need to make any changes in quintet.js
+For now, a button needs to be added to quintet.html, but the list of buttons should become generated at some point.
+
+There is a departure from the original in that some features have been left out as 'gold plating'.
+
+Also the coding style is different, there is much more whitespace, comments and string manipulation ( vs. DOM manipulation ).
+Tabbing should be done with tabs, tabs were meant to take 2 spaces. You will notice that my editors do not always agree with me.
+
+This makes the code much more approachable IMHO, we will see how that works out.
+
+Finally, Quintet is supposed to be work in tandem with a backend, this is not in scope for this project.
+All communication with that backend should be done with the JSON format because it is awesome and the future.
+
+
+--
+Last updated May 15, 2012
+
+</body>
+</html>

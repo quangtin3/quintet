@@ -6,6 +6,8 @@
 	This code is only used for building settings html, which is a very limited use case
 	Obviously this code will break in other real world scenario's
 	Also, goggles wont work
+
+	Also, convention arises : double quotes for style, and attributes in general
 */
 
 //Let's just throw it into quintet
@@ -84,6 +86,32 @@ quintet.htmlbuilder = {
 		this.html = this.html.replace( "<td><!--content--></td>" , "<td colspan='" + span + "'><!--content--></td>"  )
 		return this;
 	},
+
+	/* H4x0rz!! Assumed to be called after any content addition */
+	/* Convention arises : double quotes for HTML attributes!! */
+	style : function( s )
+	{
+		//Yes, this is will only work for my use case
+		var contentSplit = this.html.split("<!--content-->")
+		var tags = contentSplit[0].split("<");
+		for( i = tags.length-1 ; i >= 0 ; i-- )
+			if( tags[i].charAt(0) != '/' && tags[i].indexOf("option") != 0 )
+			{
+				if( tags[i].indexOf('style="') == -1 )
+				{
+					var tagParts = tags[i].split(">")
+					tags[i] = tagParts[0] + " style='" + s + "'>" + tagParts[1];
+				}
+				else
+				{
+					var tagParts = tags[i].split('style="')
+					tags[i] = tagParts[0] + 'style="' + s + ';' + tagParts[1];
+				}
+				this.html = tags.join("<") + "<!--content-->" + contentSplit[1];
+				break;
+			}
+		return this;
+	},
 	
 	//<label for="field.%s">%s</label>
 	label : function( caption )
@@ -133,6 +161,24 @@ quintet.htmlbuilder = {
 
 		return this;
 	},
+
+	//Size selector, ugh..
+	//var element = document.getElementById('leaveCode');    element.value = valueToSelect;
+	dropdown : function( id , content )
+	{
+		this._splitOverHint("content");
+		//Caller provides comma separated string or an array
+		if (typeof content == "string")
+			var content = content.split(",")
+		//Generate the options
+		var s = "";
+		for( var i = 0 ; i < content.length ; i++ )
+			s = s + '<option value="' + content[i] + '">' + content[i] + '</option>'
+		//Put it all together			
+		this.html = sprintf( '%s<select id="field.%s">%s</select>%s' , this.pre , id , s , this.post );
+		return this;
+	},
+
 
 	//<input type="checkbox" id="field.bold">&nbsp;Bold&nbsp;
 	checkbox : function( id , value )

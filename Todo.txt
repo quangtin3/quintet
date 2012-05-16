@@ -1,10 +1,11 @@
+TODO
 
 Guidelines
 
 * Make and keep UI usable with bootstrap
 * Comment code much more
 
-Long Term
+Medium Term
 
 * Add many more widgets
 * Set up demo site
@@ -14,6 +15,10 @@ Short Term
 * Wire field settings to the options
 
 DONE 
+
+May 14 2012
+
+* HTML builder code to quickly build settings panels
 
 May 13 2012
 
