@@ -1,5 +1,11 @@
-
-
+/*
+ * quintet.singletextfield.js : all logic pertaining to simple text fields
+ *
+ * Copyright 2012 konijn@gmail.com aka Tom Demuyt
+ *
+ * Licensed under Apache v2.0 http://www.apache.org/licenses/LICENSE-2.0.html
+ *
+ */
 quintet.registerWidget
 (
 	widget = {
@@ -10,11 +16,10 @@ quintet.registerWidget
 		/* These options will get serialized and stored in the backend for actual use */
 		createOptions : 	function()
 		{
-			var name = "widgetLine";
-			var counter = $("."+name).length + 1;
+			var counter = $("."+this.id).length + 1;
 			var o =
 		  {
-				label : "Single field text " + counter,
+				label : "Single field text '" + counter + "'",
 				value : "",
 				hint : "This is a single field text",
 				font : "default",
@@ -27,7 +32,6 @@ quintet.registerWidget
 				labelColor : "default",
 				valueColor : "default",
 				hintColor  : "default",
-				name : name, //<- TODO , name probably is pointless
 				id : this.id,
 			};
 			return o;
@@ -37,6 +41,9 @@ quintet.registerWidget
 		//+1 for innerHTML
 		createOptionsUI : function ( id , element )
 		{
+			var o;
+			console.log( o = JSON.parse( atob($( element.parentNode ).find("#options")[0].value) ) );
+
 			$("#"+id)[0].innerHTML =
 				quintet.htmlbuilder
 				.clear()
@@ -50,7 +57,11 @@ quintet.registerWidget
 							.cell().label("value")
 							.cell().textInput("value")
 						.row()
-							.cell().colspan(2).label("hint").textArea("hint")
+					.table()
+						.row()
+							.cell().colspan(2).label("hint").textArea("hint").style("width:250px")
+						.row()
+					.table()
 						.row()
 							.cell().fontSelector("font")
 							.cell().sizeSelector("size")
@@ -76,47 +87,41 @@ quintet.registerWidget
 
 		/* Mandatory : all widgets must have a create */
 		/* This is what the drag helper function calls, magic will place then the helper in the sortable form */
-		create : function( options )
+		create : function( o /*options*/ )
 		{
 			//get options or create new options
 			//this gets messed up, hence the go-around for the original self
-			var options = ( options && !(options instanceof jQuery.Event) ) || quintet.getWidget("line").createOptions()
+			var o = ( o && !(o instanceof jQuery.Event) ) || quintet.getWidget("line").createOptions()
 
-			options._closeButton = quintet.mode.design ? '<a class="close" href="#">&times;</a>' : ''
-			options._isRequired  = options.required ? '<em>*</em>' : ''
-			options._labelColor = options.labelColor != "default" ? "style='color:" + options.labelColor + "'" : "";
-			options._valueColor = options.valueColor != "default" ? "style='color:" + options.valueColor + "'" : "";
-			options._hintColor  = options.hintColor  != "default" ? "style='color:" + options.hintColor  + "'" : "";
-
+			o._closeButton = quintet.mode.design ? '<a class="close" href="#">&times;</a>' : ''
+			o._isRequired  = o.required ? '<em class="required">*</em>&nbsp;' : ''
+			o._labelColor = o.labelColor != "default" ? "style='color:" + o.labelColor + "'" : "";
+			o._valueColor = o.valueColor != "default" ? "style='color:" + o.valueColor + "'" : "";
+			o._hintColor  = o.hintColor  != "default" ? "style='color:" + o.hintColor  + "'" : "";
 
 			//Pass the options ( by value , lazy me ), the css name, the css value and the default
 			//If the value == default, then the css remains unmodified
 			//options._style will get modified for later use
-			quintet.considerStyle( options , 'font-family' , options.font , "default" );
-			quintet.considerStyle( options , 'font-size'   , options.size , 8 );
-			quintet.considerStyle( options , 'font-weight' , options.bold?"bold":"normal" , "normal" );
-			quintet.considerStyle( options , 'font-style'  , options.italic?"italic":"normal" , "normal" );
-			quintet.considerStyle( options , 'font-decoration' , options.underline?"underline":"none" , "none" );
+			quintet.considerStyle( o , 'font-family' , o.font , "default" );
+			quintet.considerStyle( o , 'font-size'   , o.size , 8 );
+			quintet.considerStyle( o , 'font-weight' , o.bold?"bold":"normal" , "normal" );
+			quintet.considerStyle( o , 'font-style'  , o.italic?"italic":"normal" , "normal" );
+			quintet.considerStyle( o , 'font-decoration' , o.underline?"underline":"none" , "none" );
 
-			//console.log( options._style );
+			o.data = quintet.widget.encodeOptions( o );//btoa( JSON.stringify( o ) );
 
 			//Contrary to the original, I believe this to be
 			//more maintainable than coding all this with DOM manipulation
 
-			var s =  sprintf('<div>%(_closeButton)s' +
-				       		        '<div class="%(id)s widget">' +
-				       			        '<label>%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
-				       			        '<input type="text" class="textInput" %(_valueColor)s value="%(value)s">' +
-				       			        '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
-				       		        '</div>' +
-				       	        '</div>' , options );
-
-			var q = $( s );
-
-			jQuery.data(q[0], "options", options );
-
-			return q;
-
+			return $( sprintf('<div>%(_closeButton)s' +
+													'<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
+													'<div class="%(id)s widget">' +
+														'<label>%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
+														'<input type="text" class="textInput" %(_valueColor)s value="%(value)s">' +
+														'<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
+													'</div>' +
+											'</div>' , o )
+				)
 		},
 	}
 );

@@ -30,6 +30,14 @@ quintet.htmlbuilder = {
 	  return this;
 	},
 
+	/* just go the end, do not collect 100$ */
+	end : function()
+	{
+		this._removeHint("content");
+		this.html = sprintf( "%s<!--content-->" , this.html );
+	  return this;
+	},
+
 	/* Remove a hint ( because we will move it further on)*/
 	_removeHint : function( hint )
 	{
@@ -40,6 +48,9 @@ quintet.htmlbuilder = {
 	/* We dont want to get rid of the hint, just presert content before it */
 	_splitOverHint : function( hint )
 	{
+		if( hint == "content" && this.html.indexOf("cellcontent") != -1 )
+			hint = "cellcontent"
+
 		this.pre  = this.html.split( "<!--" + hint + "-->" )[0];
 		this.post = this.html.split( "<!--" + hint + "-->" )[1];
 		this.post = "<!--" + hint + "-->" + ( this.post || "" );
@@ -56,6 +67,8 @@ quintet.htmlbuilder = {
 	/* Assumed to contain rows, could be in a well, or not */
 	table : function()
 	{
+		this._removeHint("cellcontent");
+		this._removeHint("cell");
 		this._removeHint("row");
 		this._splitOverHint("content");
 		this.html = sprintf( '%s<table><!--row--></table>%s' , this.pre , this.post );
@@ -65,6 +78,7 @@ quintet.htmlbuilder = {
 	/* Assumed to contain cells */
 	row : function()
 	{
+		this._removeHint("cellcontent");
 		this._removeHint("cell");
 		this._splitOverHint("row");
 		this.html = sprintf( '%s<tr><!--cell--></tr>%s' , this.pre , this.post );
@@ -74,17 +88,23 @@ quintet.htmlbuilder = {
 	/* Assumed to contain content, ouch.. */
 	cell : function()
 	{
-		this._removeHint("content");
+		this._removeHint("cellcontent");
 		this._splitOverHint("cell");
-		this.html = sprintf( '%s<td><!--content--></td>%s' , this.pre , this.post );
+		this.html = sprintf( '%s<td><!--cellcontent--></td>%s' , this.pre , this.post );
 		return this;
 	},
 
 	/* H4x0rz!! Assumed to be called after cell */
 	colspan : function( span )
 	{
-		this.html = this.html.replace( "<td><!--content--></td>" , "<td colspan='" + span + "'><!--content--></td>"  )
+		var contentHint = this.contentHint();
+		this.html = this.html.replace( "<td><!--" + contentHint + "--></td>" , "<td colspan='" + span + "'><!--" + contentHint + "--></td>"  )
 		return this;
+	},
+
+	contentHint : function()
+	{
+		return ( this.html.indexOf("cellcontent") != -1 ? "cellcontent" : "content" );
 	},
 
 	/* H4x0rz!! Assumed to be called after any content addition */
@@ -92,7 +112,8 @@ quintet.htmlbuilder = {
 	style : function( s )
 	{
 		//Yes, this is will only work for my use case
-		var contentSplit = this.html.split("<!--content-->")
+		var contentHint = this.contentHint();
+		var contentSplit = this.html.split("<!--" + contentHint + "-->")
 		var tags = contentSplit[0].split("<");
 		for( i = tags.length-1 ; i >= 0 ; i-- )
 			if( tags[i].charAt(0) != '/' && tags[i].indexOf("option") != 0 )
@@ -107,7 +128,7 @@ quintet.htmlbuilder = {
 					var tagParts = tags[i].split('style="')
 					tags[i] = tagParts[0] + 'style="' + s + ';' + tagParts[1];
 				}
-				this.html = tags.join("<") + "<!--content-->" + contentSplit[1];
+				this.html = tags.join("<") + "<!--" + contentHint + "-->" + contentSplit[1];
 				break;
 			}
 		return this;
@@ -131,11 +152,10 @@ quintet.htmlbuilder = {
 	},
 
 	//<textarea id="field.description" style="width:100%"></textarea>
-	textArea : function( id , style )
+	textArea : function( id )
 	{
-		style = style || "width:100%"; //Assume we want 100% width
 		this._splitOverHint("content");
-		this.html = sprintf( '%s<textarea id="field.%s" style="%s"></textarea>%s' , this.pre , id , style , this.post );
+		this.html = sprintf( '%s<textarea id="field.%s"></textarea>%s' , this.pre , id , this.post );
 		return this;
 	},
 

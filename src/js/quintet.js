@@ -21,16 +21,16 @@ quintet =
 		//Allow the right panel to receive elements
 		$( "#rightColumn" ).sortable(
 			{
-				receive: function( event, ui )             //Manipulate the button which got dragged so that it turns into the helper
+				receive: function( event, ui )           //Manipulate the button which got dragged so that it turns into the helper
 				{
 					$( "#rightColumn .btn" )               //Find the item, should be a button within the right column
 					.attr('class',ui.helper.attr('class')) //Take over the classes of the helper
 					.attr('style',ui.helper.attr('style')) //Take over the style of the helper
 					.css('position', 'static')             //But ignore position
-					.css('width', 'auto')                  //But ignore position
-					.css('height', 'auto')                 //But ignore position
-					.css('top', 'auto')                    //But ignore position
-					.css('left', 'auto')                   //But ignore position
+					.css('width', 'auto')                  //But ignore width
+					.css('height', 'auto')                 //But ignore height
+					.css('top', 'auto')                    //But ignore top
+					.css('left', 'auto')                   //But ignore left
 					.css('display', 'block')               //Make sure this gets displayed as a block
 					.on( 'click' , quintet.customize )     //Allow the user to customize the field
 					[0].innerHTML = ui.helper[0].innerHTML;//Take over the innerHTML of the helper
@@ -54,10 +54,6 @@ quintet =
 			.draggable( { connectToSortable: "#rightColumn" , refreshPositions: true , helper : widget.create } );
 
 		}
-
-
-
-
 	},
 
 	//Each widget must register itself
@@ -88,7 +84,7 @@ quintet =
 
 	customize : function(e)
 	{
-		console.log( e );
+		//KILLME console.log( e );
 		//We need to find an element ( this one or a parent to the nth degree ) with
 		//the 'widget' class, which will then give the widget name, which then gives the
 		//the 'widget' through getWidget which allows then to change the innerHTML of settings
@@ -101,11 +97,37 @@ quintet =
 				break; //We found it
 			src = src.parentElement;
 		}
-		console.log( src );
-		console.log( src.className.split(" ")[0] );
+		//KILLME console.log( src );
+		//KILLME console.log( src.className.split(" ")[0] );
 		var id = src.className.split(" ")[0];
 		var widget = quintet.getWidget( id );
-		console.log( widget );
-		widget.createOptionsUI( 'settings' );
+		//KILLME console.log( widget );
+		widget.createOptionsUI( 'settings' , src );
 	},
+
+	widget : 
+	{
+		encodeOptions : function( o )
+		{
+			//Create a clone, this approach is ok for options
+			var clone  = JSON.parse( JSON.stringify( o ) );
+			//We know we dont want to encode data
+			delete clone.data;
+			//Loop over the properties, kill the private ones
+			for( var key in clone )
+				if( key.charAt(0) == '_' )
+					delete clone[key];
+			return btoa( JSON.stringify( clone ) )
+
+		},
+
+		decodeOptions : function( element )
+		{
+			while( $( element ).find("#options").length == 0 )
+				element = element.parentNode;
+			
+
+			JSON.parse( atob($( element.parentNode ).find("#options")[0].value) )
+		},
+	}
 };
