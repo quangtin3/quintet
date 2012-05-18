@@ -16,6 +16,11 @@ Short Term
 
 DONE 
 
+May 17 2012
+
+* Options are getting loaded partially when clicking a widget
+* Style is now applied to generated widget [bug]
+
 May 14 2012
 
 * HTML builder code to quickly build settings panels

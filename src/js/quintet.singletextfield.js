@@ -25,7 +25,7 @@ quintet.registerWidget
 				font : "default",
 				size : 16,
 				bold : false,
-				italic : false,
+				italic : true,
 				underline : false,
 				required : counter == 1 ? true : false,
 				filter : "any",
@@ -52,30 +52,30 @@ quintet.registerWidget
 					.table()
 						.row()
 							.cell().label("label")
-							.cell().textInput("label")
+							.cell("paddedStretch").textInput("label", o.label)
 						.row()
 							.cell().label("value")
-							.cell().textInput("value")
+							.cell("paddedStretch").textInput("value", o.value)
 						.row()
-					.table()
+					.table("stretch")
 						.row()
-							.cell().colspan(2).label("hint").textArea("hint").style("width:250px")
+							.cell("paddedStretch").colspan(2).label("hint").textArea("hint", o.hint).style("width:100%")
 						.row()
-					.table()
-						.row()
-							.cell().fontSelector("font")
-							.cell().sizeSelector("size")
+					.table("stretch")
+						.row("stretch")
+							.cell().fontSelector("font")//TODO, deal with value
+							.cell().sizeSelector("size")//TODO, deal with value
 						.row()
 							.cell().colspan(2)
-								.checkbox("bold")
-								.checkbox("italic")
-								.checkbox("underline")
+								.checkbox("bold" , o.bold ).text("&nbsp;")
+								.checkbox("italic" , o.italic ).text("&nbsp;")
+								.checkbox("underline" , o.underline ).text("&nbsp;")
 				.h3("Value")
 				.well()
 					.table()
 						.row()
-							.cell().checkbox("required")
-							.cell().dropdown("filter" , "Any,Number,Text").style("width:100px")
+							.cell().checkbox("required" , o.required )
+							.cell().dropdown("filter" , "Any,Number,Text" , o.filter ).style("width:100px") //TODO, deal with value
 				.html;
 
 				$('#field\\.font').fontPickerRegios({
@@ -113,7 +113,7 @@ quintet.registerWidget
 			//Contrary to the original, I believe this to be
 			//more maintainable than coding all this with DOM manipulation
 
-			return $( sprintf('<div>%(_closeButton)s' +
+			return $( sprintf('<div style="%(_style)s">%(_closeButton)s' +
 													'<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
 													'<div class="%(id)s widget">' +
 														'<label>%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +

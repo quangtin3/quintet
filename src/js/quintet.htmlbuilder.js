@@ -65,32 +65,40 @@ quintet.htmlbuilder = {
 	},
 
 	/* Assumed to contain rows, could be in a well, or not */
-	table : function()
+	table : function( className )
 	{
+		className = this.classify( className )
 		this._removeHint("cellcontent");
 		this._removeHint("cell");
 		this._removeHint("row");
 		this._splitOverHint("content");
-		this.html = sprintf( '%s<table><!--row--></table>%s' , this.pre , this.post );
+		this.html = sprintf( '%s<table%s><!--row--></table>%s' , this.pre , className, this.post );
 		return this;
 	},
 
 	/* Assumed to contain cells */
-	row : function()
+	row : function( className )
 	{
+		className = this.classify( className )
 		this._removeHint("cellcontent");
 		this._removeHint("cell");
 		this._splitOverHint("row");
-		this.html = sprintf( '%s<tr><!--cell--></tr>%s' , this.pre , this.post );
+		this.html = sprintf( '%s<tr%s><!--cell--></tr>%s' , this.pre , className ,this.post );
 		return this;
 	},
 
-	/* Assumed to contain content, ouch.. */
-	cell : function()
+	classify : function( className )
 	{
+		return className ? ' class="' + className + '"' : "";
+	},
+
+	/* Assumed to contain content, ouch.. */
+	cell : function( className )
+	{
+		className = this.classify( className )
 		this._removeHint("cellcontent");
 		this._splitOverHint("cell");
-		this.html = sprintf( '%s<td><!--cellcontent--></td>%s' , this.pre , this.post );
+		this.html = sprintf( '%s<td%s><!--cellcontent--></td>%s' , this.pre , className , this.post );
 		return this;
 	},
 
@@ -133,7 +141,12 @@ quintet.htmlbuilder = {
 			}
 		return this;
 	},
-	
+
+	stretch : function()
+	{
+		return this.style("width:100%");
+	},
+
 	//<label for="field.%s">%s</label>
 	label : function( caption )
 	{
@@ -142,24 +155,32 @@ quintet.htmlbuilder = {
 		return this;
 	},
 
+	//<label for="field.%s">%s</label>
+	text : function( s )
+	{
+		this._splitOverHint("content");
+		this.html = sprintf( '%s%s%s' , this.pre , s , this.post );
+		return this;
+	},
+
 	//<input type="text" id="field.label" style="width:100%">
-	textInput : function( id , style )
+	textInput : function( id , value , style )
 	{
 		style = style || "width:100%"; //Assume we want 100% width
 		this._splitOverHint("content");
-		this.html = sprintf( '%s<input type="text" id="field.%s" style="%s">%s' , this.pre , id , style , this.post );
+		this.html = sprintf( '%s<input type="text" id="field.%s" value="%s" style="%s">%s' , this.pre , id , value , style , this.post );
 		return this;
 	},
 
 	//<textarea id="field.description" style="width:100%"></textarea>
-	textArea : function( id )
+	textArea : function( id , value )
 	{
 		this._splitOverHint("content");
-		this.html = sprintf( '%s<textarea id="field.%s"></textarea>%s' , this.pre , id , this.post );
+		this.html = sprintf( '%s<textarea id="field.%s">%s</textarea>%s' , this.pre , id , value , this.post );
 		return this;
 	},
 
-	//<div id='fontselector' style="border-radius: 3px;"></div>	
+	//<div id='fontselector' style="border-radius: 3px;"></div>
 	fontSelector : function( id )
 	{
 		this._splitOverHint("content");
@@ -176,7 +197,7 @@ quintet.htmlbuilder = {
 		var s = "";
 		for( var i = 9 ; i < 33 ; i++ )
 			s = s + '<option value="' + i + '" ' + (i==13?'SELECTED':'') + '">' + i + ' px</option>'
-			
+
 		this.html = sprintf( '%s<select id="field.%s" style="width:130px" value="13">%s</select>%s' , this.pre , id , s , this.post );
 
 		return this;
@@ -194,7 +215,7 @@ quintet.htmlbuilder = {
 		var s = "";
 		for( var i = 0 ; i < content.length ; i++ )
 			s = s + '<option value="' + content[i] + '">' + content[i] + '</option>'
-		//Put it all together			
+		//Put it all together
 		this.html = sprintf( '%s<select id="field.%s">%s</select>%s' , this.pre , id , s , this.post );
 		return this;
 	},
@@ -203,9 +224,11 @@ quintet.htmlbuilder = {
 	//<input type="checkbox" id="field.bold">&nbsp;Bold&nbsp;
 	checkbox : function( id , value )
 	{
-		value = value || false;
+		if( value )
+			value = " checked";
+
 		this._splitOverHint("content");
-		this.html = sprintf( '%s<input type="checkbox" id="field.%s">&nbsp;%s&nbsp%s' , this.pre , id , id.capitalizeFirst() , this.post );
+		this.html = sprintf( '%s<input type="checkbox" id="field.%s" %s>&nbsp;%s&nbsp%s' , this.pre , id , value, id.capitalizeFirst() , this.post );
 		return this;
 	}
 
