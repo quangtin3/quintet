@@ -184,7 +184,7 @@ quintet.htmlbuilder = {
 	fontSelector : function( id )
 	{
 		this._splitOverHint("content");
-		this.html = sprintf( '%s<div id="field.%s" class="fontselector" style="border-radius: 3px;"></div>%s' , this.pre , id , this.post );
+		this.html = sprintf( '%s<div id="field.dummy.%s" class="fontselector" style="border-radius: 3px;"></div><input type="hidden" id="field.%s">%s' , this.pre , id , id , this.post );
 		return this;
 	},
 
@@ -196,7 +196,7 @@ quintet.htmlbuilder = {
 		//Generate the options
 		var s = "";
 		for( var i = 9 ; i < 33 ; i++ )
-			s = s + '<option value="' + i + '" ' + (i==13?'SELECTED':'') + '">' + i + ' px</option>'
+			s = s + '<option value="' + i + '">' + i + ' px</option>'
 
 		this.html = sprintf( '%s<select id="field.%s" style="width:130px" value="13">%s</select>%s' , this.pre , id , s , this.post );
 

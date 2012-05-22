@@ -23,9 +23,9 @@ quintet.registerWidget
 				value : "",
 				hint : "This is a single field text",
 				font : "default",
-				size : 16,
+				size : 13, //bootstrap default
 				bold : false,
-				italic : true,
+				italic : false,
 				underline : false,
 				required : counter == 1 ? true : false,
 				filter : "any",
@@ -33,6 +33,7 @@ quintet.registerWidget
 				valueColor : "default",
 				hintColor  : "default",
 				id : this.id,
+				ref : this.id + counter,
 			};
 			return o;
 		},
@@ -41,8 +42,7 @@ quintet.registerWidget
 		//+1 for innerHTML
 		createOptionsUI : function ( id , element )
 		{
-			var o;
-			console.log( o = JSON.parse( atob($( element.parentNode ).find("#options")[0].value) ) );
+			var o = quintet.widget.decodeOptions( element );
 
 			$("#"+id)[0].innerHTML =
 				quintet.htmlbuilder
@@ -54,17 +54,17 @@ quintet.registerWidget
 							.cell().label("label")
 							.cell("paddedStretch").textInput("label", o.label)
 						.row()
-							.cell().label("value")
+							.cell().label("default")
 							.cell("paddedStretch").textInput("value", o.value)
 						.row()
 					.table("stretch")
 						.row()
 							.cell("paddedStretch").colspan(2).label("hint").textArea("hint", o.hint).style("width:100%")
-						.row()
-					.table("stretch")
-						.row("stretch")
-							.cell().fontSelector("font")//TODO, deal with value
-							.cell().sizeSelector("size")//TODO, deal with value
+				//		.row()
+				//	.table("stretch")
+				//		.row("stretch")
+				//			.cell().fontSelector("font")
+				//			.cell().sizeSelector("size")//TODO, deal with value
 						.row()
 							.cell().colspan(2)
 								.checkbox("bold" , o.bold ).text("&nbsp;")
@@ -78,11 +78,25 @@ quintet.registerWidget
 							.cell().dropdown("filter" , "Any,Number,Text" , o.filter ).style("width:100px") //TODO, deal with value
 				.html;
 
-				$('#field\\.font').fontPickerRegios({
+				//Init the font chooser, some notes;
+				//1, fricking jQuery requires double backward slashes to have a dot in a selector
+				//1b. Yes, I could have changed my naming standard, but I like namespaced id's
+				//2. The selector is called field.dummy.{id} , the value is passed to a hidden input for further processing, name is field.{id}
+				//3. Encapsulated in this file is the assumption that the {id} for the font widget is 'font', 
+				//4. applyOptions expects an input element, hence the subterfuge of a hidden input..
+				$('#field\\.dummy\\.font').fontPickerRegios({
 						defaultFont: 'Helvetica Neue',
-						callbackFunc: function(){},
-						selid: 'field\\.font',
+						callbackFunc: function(fontName)
+							{
+								quintet.widget.applyOptions( $('#field\\.font').val(fontName)[0] ) 
+							},
+						selid: 'field\\.dummy\\.font',
 				});
+
+				//Init the font size
+				$("#field\\.size").val( o.size );
+
+				quintet.widget.current = o.ref;
 		},
 
 		/* Mandatory : all widgets must have a create */
@@ -91,7 +105,8 @@ quintet.registerWidget
 		{
 			//get options or create new options
 			//this gets messed up, hence the go-around for the original self
-			var o = ( o && !(o instanceof jQuery.Event) ) || quintet.getWidget("line").createOptions()
+			if( !o || (o instanceof jQuery.Event) )
+				o = quintet.getWidget("line").createOptions()
 
 			o._closeButton = quintet.mode.design ? '<a class="close" href="#">&times;</a>' : ''
 			o._isRequired  = o.required ? '<em class="required">*</em>&nbsp;' : ''
@@ -103,20 +118,20 @@ quintet.registerWidget
 			//If the value == default, then the css remains unmodified
 			//options._style will get modified for later use
 			quintet.considerStyle( o , 'font-family' , o.font , "default" );
-			quintet.considerStyle( o , 'font-size'   , o.size , 8 );
+			quintet.considerStyle( o , 'font-size'   , o.size+"px" , "13px" );
 			quintet.considerStyle( o , 'font-weight' , o.bold?"bold":"normal" , "normal" );
 			quintet.considerStyle( o , 'font-style'  , o.italic?"italic":"normal" , "normal" );
-			quintet.considerStyle( o , 'font-decoration' , o.underline?"underline":"none" , "none" );
+			quintet.considerStyle( o , 'text-decoration' , o.underline?"underline":"none" , "none" );
 
 			o.data = quintet.widget.encodeOptions( o );//btoa( JSON.stringify( o ) );
 
 			//Contrary to the original, I believe this to be
 			//more maintainable than coding all this with DOM manipulation
 
-			return $( sprintf('<div style="%(_style)s">%(_closeButton)s' +
+			return $( sprintf('<div id="%(ref)s">%(_closeButton)s' +
 													'<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
 													'<div class="%(id)s widget">' +
-														'<label>%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
+														'<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
 														'<input type="text" class="textInput" %(_valueColor)s value="%(value)s">' +
 														'<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
 													'</div>' +

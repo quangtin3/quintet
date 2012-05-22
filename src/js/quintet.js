@@ -26,6 +26,7 @@ quintet =
 					$( "#rightColumn .btn" )               //Find the item, should be a button within the right column
 					.attr('class',ui.helper.attr('class')) //Take over the classes of the helper
 					.attr('style',ui.helper.attr('style')) //Take over the style of the helper
+					.attr('id'   ,ui.helper.attr('id'))    //Take over the style of the helper
 					.css('position', 'static')             //But ignore position
 					.css('width', 'auto')                  //But ignore width
 					.css('height', 'auto')                 //But ignore height
@@ -54,6 +55,10 @@ quintet =
 			.draggable( { connectToSortable: "#rightColumn" , refreshPositions: true , helper : widget.create } );
 
 		}
+
+		//Enable the UI option fields changing the selected widget
+		$('[id^="field."]').live( 'input' , function(e) { quintet.widget.applyOptions( e.srcElement ); });
+		$('[id^="field."]').live( 'change' , function(e){	quintet.widget.applyOptions( e.srcElement ); }); //Enable the option option changing..
 	},
 
 	//Each widget must register itself
@@ -84,7 +89,6 @@ quintet =
 
 	customize : function(e)
 	{
-		//KILLME console.log( e );
 		//We need to find an element ( this one or a parent to the nth degree ) with
 		//the 'widget' class, which will then give the widget name, which then gives the
 		//the 'widget' through getWidget which allows then to change the innerHTML of settings
@@ -97,11 +101,9 @@ quintet =
 				break; //We found it
 			src = src.parentElement;
 		}
-		//KILLME console.log( src );
-		//KILLME console.log( src.className.split(" ")[0] );
 		var id = src.className.split(" ")[0];
 		var widget = quintet.getWidget( id );
-		//KILLME console.log( widget );
+
 		widget.createOptionsUI( 'settings' , src );
 	},
 
@@ -117,17 +119,36 @@ quintet =
 			for( var key in clone )
 				if( key.charAt(0) == '_' )
 					delete clone[key];
+			//Binary to Ascii, html5 for the win
 			return btoa( JSON.stringify( clone ) )
-
 		},
 
 		decodeOptions : function( element )
 		{
 			while( $( element ).find("#options").length == 0 )
 				element = element.parentNode;
-			
 
-			JSON.parse( atob($( element.parentNode ).find("#options")[0].value) )
+			return JSON.parse( atob($( element ).find("#options")[0].value) )
 		},
+
+		applyOptions : function( element )
+		{
+			var newValue  = $(element).is(":checkbox") ? element.checked : element.value;  //Hack for checkboxes
+			var control   = $('#' + quintet.widget.current );                              //The control we are working on
+			var o         = quintet.widget.decodeOptions( control );                       //The options linked to the control
+			var widget    = quintet.getWidget( o.id );                                     //The widget class of the control
+			var attribute = element.id.split(".")[1];                                      //Attribute we are changing
+
+			if( o[attribute] !== undefined )
+			{
+				o[attribute] = newValue;
+				var newWidget = widget.create( o );
+				control.replaceWith( newWidget );
+			}
+			else
+			{
+				console.error("Unknown attribute:" , attribute)
+			}
+		}
 	}
 };
