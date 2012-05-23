@@ -25,9 +25,14 @@
 
 <script type="text/javascript" src="js/js.js"></script>
 <script type="text/javascript" src="js/quintet.js"></script>
-<script type="text/javascript" src="js/quintet.htmlbuilder.js"></script>
-<script type="text/javascript" src="js/quintet.singletextfield.js"></script>
 
+<script type="text/javascript" src="js/quintet.singletextfield.js"></script>
+<script type="text/javascript" src="js/quintet.htmlbuilder.js"></script>
+<script type="text/javascript" src="js/quintet.boxtext.js"></script>
+<script type="text/javascript" src="js/quintet.header.js"></script>
+<script type="text/javascript" src="js/quintet.email.js"></script>
+<script type="text/javascript" src="js/quintet.form.js"></script>
+<script type="text/javascript" src="js/quintet.name.js"></script>
 
 <script type="text/javascript">
 $(function()
@@ -44,91 +49,48 @@ $(function()
 	<div id="leftColumn"  class="panel">
 
 		<ul class="nav nav-tabs" id="tabs">
-  		<li><a href="#fields"   data-toggle="tab">Add field</a></li>
-  		<li><a href="#settings" data-toggle="tab">Field settings</a></li>
-  		<li><a href="#form"     data-toggle="tab">Form</a></li>
-  	</ul>
+			<li><a href="#fields"   data-toggle="tab">Add field</a></li>
+			<li><a href="#settings" data-toggle="tab">Field settings</a></li>
+			<li><a href="#form"     data-toggle="tab">Form</a></li>
+		</ul>
 
-  	<div class="tab-content">
-  		<div class="tab-pane active" id="fields">
-  			<ul style="list-style-type: none;">
-	  			<li><b>Standard Fields</b></li>
-	  			<li>&nbsp;</li>
-	  			<li><div id="line" class="btn">Single line field</div><br></li>
-	  			<li>&nbsp;</li>
-	  			<li><b>Fancy stuff</b><br></li>
-	  			<li>&nbsp;</li>
-	  			<li><div id="text" class="btn">Explanation Text</div><br></li>
-  			<ul>
-  		</div>
-  		<div class="tab-pane" id="settings"></div>
-  		<div class="tab-pane" id="form">
-
-  			<h3>Basics</h3>
-  			<div class="well">
-  			<table  >
-
-  			<tr>
-  				<td><label for="field.label">Label</label></td>
-  				<td><input type="text" id="field.label" style="width:100%"></td>
-  			</tr>
-
-  			<tr>
-  				<td><label for="field.value">Value</label></td>
-  				<td><input type="text" id="field.value" style="width:100%"></td>
-  			</tr>
-
-  			<tr>
-  			<td  colspan="2">
-  				<label for="field.description">Description</label>
-  				<textarea id="field.description" style="width:100%"></textarea>
-  				</td>
-  			</tr>
-
-  			<tr>
-  				<td style="width:40%">
-						<div id='fontselector' class="fontselector" style="border-radius: 3px;width:100px"></div>
-					</td>
-					<td>
-						<select id="field.fontSize" style="width:100px">
-							<option value="9">9</option>
-							<option value="10">10</option>
-							<option value="11">11</option>
-							<option value="12">12</option>
-							<option value="13" selected>13</option>
-							<option value="14">14</option>
-							<option value="15">15</option>
-							<option value="16">16</option>
-							<option value="17">17</option>
-							<option value="18">18</option>
-							<option value="20">20</option>
-							<option value="22">22</option>
-							<option value="24">24</option>
-							<option value="28">28</option>
-							<option value="32">32</option>
-						</select>
-					</td>
-
-				</tr>
-
-				<tr>
-					<td colspan="2">
-							<input type="checkbox" id="field.bold">&nbsp;Bold&nbsp;
-							<input type="checkbox" id="field.italic">&nbsp;Italic&nbsp;
-							<input type="checkbox" id="field.underline">&nbsp;Underline
-					</td>
-				</tr>
-
-				</table>
-
-				</div>
-
-
+		<div class="tab-content">
+			<div class="tab-pane active" id="fields">
+				<ul style="list-style-type: none;">
+				<li><b>Standard Fields</b></li>
+					<li>&nbsp;</li>
+					<li><div id="header" class="btn">Header text</div><br></li>
+					<li>&nbsp;</li>
+					<li><div id="line" class="btn">Single line field</div><br></li>
+					<li>&nbsp;</li>
+					<li><div id="box" class="btn">Multi line field</div><br></li>
+					<li>&nbsp;</li>
+					<li><div id="name" class="btn">Full name</div><br></li>
+					<li>&nbsp;</li>
+					<li><div id="email" class="btn">Email</div><br></li>
+					<li>&nbsp;</li>
+					<li><b>Fancy stuff</b><br></li>
+					<li>&nbsp;</li>
+					<li><div id="text" class="btn">Explanation text</div><br></li>
+				<ul>
+			</div>
+			<div class="tab-pane" id="settings"></div>
+			<div class="tab-pane" id="form">
 			</div>
 		</div>
 
 	</div>
-		<div id="rightColumn" class="panel ui-sortable ui-droppable"></div>
+		<div id="rightColumn" class="panelNoBorder quintetForm">
+			<div id="col1" class="widgetColumn ui-sortable ui-droppable quintetForm" style="display:inline-block;width:32%;vertical-align: top;">
+				<div class='killmenow'>&nbsp;</div>
+			</div>
+			<div id="col2" class="widgetColumn ui-sortable ui-droppable quintetForm" style="display:inline-block;width:32%;vertical-align: top;">
+				<div class='killmenow'>&nbsp;</div>
+			</div>
+			<div id="col3" class="widgetColumn ui-sortable ui-droppable quintetForm" style="display:inline-block;width:32%;vertical-align: top;">
+				<div class='killmenow'>&nbsp;</div>
+			</div> 
+		</div>
 </div>
 
 </body>
