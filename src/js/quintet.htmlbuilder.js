@@ -1,18 +1,20 @@
-
-
 /*
-	The goal here is to write html quickly, in half the space ( no closing tags )
-	This means that there can be no nested tags ( no tables in tables etc. )
-	This code is only used for building settings html, which is a very limited use case
-	Obviously this code will break in other real world scenario's
-	Also, goggles wont work
+ * quintet.js : central functionality for formbuilding
+ *
+ * Copyright 2012 konijn@gmail.com aka Tom Demuyt
+ *
+ * Licensed under Apache v2.0 http://www.apache.org/licenses/LICENSE-2.0.html
+ *
 
-	Also, convention arises : double quotes for style, and attributes in general
-*/
+ * The goal here is to write html quickly, in half the space ( no closing tags )
+ * This means that there can be no nested tags ( no tables in tables etc. )
+ * This code is only used for building settings html, which is a very limited use case
+ * Obviously this code will break in other real world scenario's, also, goggles wont work
 
-//Let's just throw it into quintet
+ * Also, convention arises : double quotes for style, and attributes in general
+ */
 
-quintet.htmlbuilder = {
+quintet.htmlbuilder = { //Let's just throw it into quintet
 
 	html : "",
 
@@ -38,14 +40,15 @@ quintet.htmlbuilder = {
 	  return this;
 	},
 
-	/* Remove a hint ( because we will move it further on)*/
+	/* Remove a hint ( because we will move it further on ) */
 	_removeHint : function( hint )
 	{
 		var a = this.html.split( "<!--" + hint + "-->" );
 		this.html = a.join("");
 	},
 
-	/* We dont want to get rid of the hint, just presert content before it */
+	/* We dont want to get rid of the hint, just presert content before it 
+	   Also we want to abstract the fact that the hints are encoded in html comments */
 	_splitOverHint : function( hint )
 	{
 		if( hint == "content" && this.html.indexOf("cellcontent") != -1 )
@@ -56,7 +59,7 @@ quintet.htmlbuilder = {
 		this.post = "<!--" + hint + "-->" + ( this.post || "" );
 	},
 
-	/* Assumed to contain further content */
+	/* Assumed to contain further content, well comes straight from bootstrap */
 	well : function()
 	{
 		this._removeHint("content");
@@ -92,7 +95,7 @@ quintet.htmlbuilder = {
 		return className ? ' class="' + className + '"' : "";
 	},
 
-	/* Assumed to contain content, ouch.. */
+	/* Will contain cellcontent, which is distinct from 'content' */
 	cell : function( className )
 	{
 		className = this.classify( className )
@@ -110,6 +113,7 @@ quintet.htmlbuilder = {
 		return this;
 	},
 
+	/*Are we talking cellcontent or content in the current context ? */
 	contentHint : function()
 	{
 		return ( this.html.indexOf("cellcontent") != -1 ? "cellcontent" : "content" );
@@ -166,7 +170,6 @@ quintet.htmlbuilder = {
 	//<input type="text" id="field.label" style="width:100%">
 	textInput : function( id , value , style )
 	{
-		style = style || "width:100%"; //Assume we want 100% width
 		this._splitOverHint("content");
 		this.html = sprintf( '%s<input type="text" id="field.%s" value="%s" style="%s">%s' , this.pre , id , value , style , this.post );
 		return this;
@@ -190,21 +193,6 @@ quintet.htmlbuilder = {
 
 	//Size selector, ugh..
 	//var element = document.getElementById('leaveCode');    element.value = valueToSelect;
-	sizeSelector : function( id )
-	{
-		this._splitOverHint("content");
-		//Generate the options
-		var s = "";
-		for( var i = 9 ; i < 33 ; i++ )
-			s = s + '<option value="' + i + '">' + i + ' px</option>'
-
-		this.html = sprintf( '%s<select id="field.%s" style="width:130px" value="13">%s</select>%s' , this.pre , id , s , this.post );
-
-		return this;
-	},
-
-	//Size selector, ugh..
-	//var element = document.getElementById('leaveCode');    element.value = valueToSelect;
 	dropdown : function( id , content )
 	{
 		this._splitOverHint("content");
@@ -220,16 +208,13 @@ quintet.htmlbuilder = {
 		return this;
 	},
 
-
 	//<input type="checkbox" id="field.bold">&nbsp;Bold&nbsp;
 	checkbox : function( id , value )
 	{
-		if( value )
-			value = " checked";
+		if( value )	value = " checked";
 
 		this._splitOverHint("content");
 		this.html = sprintf( '%s<input type="checkbox" id="field.%s" %s>&nbsp;%s&nbsp%s' , this.pre , id , value, id.capitalizeFirst() , this.post );
 		return this;
 	}
-
 }

@@ -23,7 +23,7 @@ quintet.registerWidget
 				value : "",
 				hint : "This is a single field text",
 				font : "default",
-				size : 13, //bootstrap default
+				size : "medium", //bootstrap default
 				bold : false,
 				italic : false,
 				underline : false,
@@ -59,12 +59,12 @@ quintet.registerWidget
 						.row()
 					.table("stretch")
 						.row()
-							.cell("paddedStretch").colspan(2).label("hint").textArea("hint", o.hint).style("width:100%")
-				//		.row()
-				//	.table("stretch")
-				//		.row("stretch")
-				//			.cell().fontSelector("font")
-				//			.cell().sizeSelector("size")//TODO, deal with value
+							.cell("paddedStretch").colspan(2).label("hint").textArea("hint", o.hint).stretch()
+						.row()
+					.table("stretch")
+						.row("stretch")
+							.cell().fontSelector("font")
+							.cell().dropdown("size" , "x-small,small,medium,large,x-large" ).style("width:130px") //sizeSelector("size") x-small,small,medium,large,x-large
 						.row()
 							.cell().colspan(2)
 								.checkbox("bold" , o.bold ).text("&nbsp;")
@@ -75,20 +75,20 @@ quintet.registerWidget
 					.table()
 						.row()
 							.cell().checkbox("required" , o.required )
-							.cell().dropdown("filter" , "Any,Number,Text" , o.filter ).style("width:100px") //TODO, deal with value
+							.cell().dropdown("filter" , "Any,Number,Text" ).style("width:100px") //TODO, deal with value
 				.html;
 
 				//Init the font chooser, some notes;
 				//1, fricking jQuery requires double backward slashes to have a dot in a selector
 				//1b. Yes, I could have changed my naming standard, but I like namespaced id's
 				//2. The selector is called field.dummy.{id} , the value is passed to a hidden input for further processing, name is field.{id}
-				//3. Encapsulated in this file is the assumption that the {id} for the font widget is 'font', 
+				//3. Encapsulated in this file is the assumption that the {id} for the font widget is 'font',
 				//4. applyOptions expects an input element, hence the subterfuge of a hidden input..
 				$('#field\\.dummy\\.font').fontPickerRegios({
 						defaultFont: 'Helvetica Neue',
 						callbackFunc: function(fontName)
 							{
-								quintet.widget.applyOptions( $('#field\\.font').val(fontName)[0] ) 
+								quintet.widget.applyOptions( $('#field\\.font').val(fontName)[0] )
 							},
 						selid: 'field\\.dummy\\.font',
 				});
@@ -96,18 +96,14 @@ quintet.registerWidget
 				//Init the font size
 				$("#field\\.size").val( o.size );
 
+				//Init the filter
+				$("#field\\.filter").val( o.filter );
+
 				quintet.widget.current = o.ref;
 		},
 
-		/* Mandatory : all widgets must have a create */
-		/* This is what the drag helper function calls, magic will place then the helper in the sortable form */
-		create : function( o /*options*/ )
+		styleOptions : function( o ) 
 		{
-			//get options or create new options
-			//this gets messed up, hence the go-around for the original self
-			if( !o || (o instanceof jQuery.Event) )
-				o = quintet.getWidget("line").createOptions()
-
 			o._closeButton = quintet.mode.design ? '<a class="close" href="#">&times;</a>' : ''
 			o._isRequired  = o.required ? '<em class="required">*</em>&nbsp;' : ''
 			o._labelColor = o.labelColor != "default" ? "style='color:" + o.labelColor + "'" : "";
@@ -118,10 +114,25 @@ quintet.registerWidget
 			//If the value == default, then the css remains unmodified
 			//options._style will get modified for later use
 			quintet.considerStyle( o , 'font-family' , o.font , "default" );
-			quintet.considerStyle( o , 'font-size'   , o.size+"px" , "13px" );
+			quintet.considerStyle( o , 'font-size'   , o.size , "medium" );
 			quintet.considerStyle( o , 'font-weight' , o.bold?"bold":"normal" , "normal" );
 			quintet.considerStyle( o , 'font-style'  , o.italic?"italic":"normal" , "normal" );
 			quintet.considerStyle( o , 'text-decoration' , o.underline?"underline":"none" , "none" );
+		},
+
+		/* Mandatory : all widgets must have a create */
+		/* This is what the drag helper function calls, magic will place then the helper in the sortable form */
+		create : function( o /*options*/ )
+		{
+			var self = quintet.getWidget("line");
+
+
+			//get options or create new options
+			//this gets messed up, hence the go-around for the original self
+			if( !o || (o instanceof jQuery.Event) )
+				o = self.createOptions()
+
+			self.styleOptions( o );
 
 			o.data = quintet.widget.encodeOptions( o );//btoa( JSON.stringify( o ) );
 
