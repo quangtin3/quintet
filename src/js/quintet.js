@@ -18,42 +18,6 @@ quintet =
 		//Show the first tab of the left side panel
 		$('#tabs a:first').tab('show');
 
-		//Allow the right panel to receive elements
-		//.widgetColumn is copy pasted all over the place..
-		$( ".widgetColumn" ).sortable(
-			{
-				receive: function( event, ui )           //Manipulate the button which got dragged so that it turns into the helper
-				{
-					if(!ui.helper) return; //Only do this for buttons
-
-					$( "#rightColumn .btn" )               //Find the item, should be a button within the right column
-					.attr('class',ui.helper.attr('class')) //Take over the classes of the helper
-					.attr('style',ui.helper.attr('style')) //Take over the style of the helper
-					.attr('id'   ,ui.helper.attr('id'))    //Take over the id of the helper
-					.css('position', 'static')             //But ignore position
-					.css('width', 'auto')                  //But ignore width
-					.css('height', 'auto')                 //But ignore height
-					.css('top', 'auto')                    //But ignore top
-					.css('left', 'auto')                   //But ignore left
-					.css('display', 'block')               //Make sure this gets displayed as a block
-					.html( ui.helper[0].innerHTML );       //Take over the innerHTML of the helper
-				},
-				connectWith: ".widgetColumn",
-			}
-		);
-
-		//Okay, very evil jQuery hack, sortable wont work without at least 1 child 
-		//Or at least, that's how it looks to me, so lets delete the pro-forma kids
-		$('.killmenow').remove();
-
-		//Make all the form element close buttons work
-		//The assumption is that elements are not nested
-		//That the close button's parent has all elements that need removal
-		//That the close button's parent's parent is the container
-		$(".close").live("click" , function(e){ e.currentTarget.parentElement.parentElement.removeChild(  e.currentTarget.parentElement ); } );
-
-		$(".widget").live("click" , quintet.customize );
-
 		//Enable the buttons
 		for( var i = 0 ; i < this.widgets.length ; i++ )
 		{
@@ -67,10 +31,6 @@ quintet =
 
 		//Enable the form options
 		quintet.getWidget("form").init();
-		
-		//Enable the UI option fields changing the selected widget
-		$('[id^="field."]').live( 'input' , function(e) { quintet.widget.applyOptions( e.srcElement ); });
-		$('[id^="field."]').live( 'change' , function(e){	quintet.widget.applyOptions( e.srcElement ); }); //Enable the option option changing..
 	},
 
 	//Each widget must register itself
