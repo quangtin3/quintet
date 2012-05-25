@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 * Quintet - WYSIWYG Web Form Builder
 * http://code.google.com/p/jquery-form-builder-plugin/
@@ -6,12 +7,10 @@
 *
 * Licensed under Apache v2.0 http://www.apache.org/licenses/LICENSE-2.0.html
 !-->
-<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Quintet</title>
-
 
 <link type="text/css" href="../lib/css/fontpicker.css" media="screen" rel="stylesheet" />
 <link type="text/css" href="../lib/bootstrap/css/bootstrap.css" media="screen" rel="stylesheet" />
@@ -27,9 +26,11 @@
 <script type="text/javascript" src="js/js.js"></script>
 <script type="text/javascript" src="js/quintet.js"></script>
 
+<!-- Can you tell I have mild OCD ? -->
 <script type="text/javascript" src="js/quintet.singletextfield.js"></script>
 <script type="text/javascript" src="js/quintet.htmlbuilder.js"></script>
 <script type="text/javascript" src="js/quintet.boxtext.js"></script>
+<script type="text/javascript" src="js/quintet.section.js"></script>
 <script type="text/javascript" src="js/quintet.header.js"></script>
 <script type="text/javascript" src="js/quintet.email.js"></script>
 <script type="text/javascript" src="js/quintet.form.js"></script>
@@ -70,24 +71,29 @@ $(function()
 					<li>&nbsp;</li>
 					<li><div id="email" class="btn">Email</div><br></li>
 					<li>&nbsp;</li>
+					<li><div id="section" class="btn">Section</div><br></li>
+					<li>&nbsp;</li>
 					<li><b>Fancy stuff</b><br></li>
 					<li>&nbsp;</li>
 					<li><div id="text" class="btn">Explanation text</div><br></li>
 				<ul>
 			</div>
 			<div class="tab-pane" id="settings"></div>
-			<div class="tab-pane" id="form">
-			</div>
+			<div class="tab-pane" id="form">	</div>
 		</div>
 
 	</div>
-		<div id="rightColumn" class="panelNoBorder quintetForm">
-			<div class="widgetColumn ui-sortable ui-droppable" style="display:inline-block;width:49%;vertical-align: top;">
-				<div class='killmenow'>&nbsp;</div>
-			</div>
-			<div class="widgetColumn ui-sortable ui-droppable" style="display:inline-block;width:49%;vertical-align: top;">
-				<div class='killmenow'>&nbsp;</div>
-			</div>
+		<div id="rightColumn" class="panelNoBorder">
+		<table class="panelBorder quintetForm" style="width:99%">
+			<tr class='contentRow'>
+				<td class="widgetColumn ui-sortable ui-droppable" style="width:49%;vertical-align: top;">
+					<div class='killmenow'>&nbsp;</div>
+				</td>
+				<td class="widgetColumn ui-sortable ui-droppable" style="width:49%;vertical-align: top;">
+					<div class='killmenow'>&nbsp;</div>
+				</td>
+			</tr>
+		</table>
 		</div>
 </div>
 

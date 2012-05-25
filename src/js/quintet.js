@@ -25,10 +25,8 @@ quintet =
 			var widget = this.widgets[i];
 			//The create button has the id of the widget id
 			$( "#" + widget.id )
-			.draggable( { connectToSortable: ".widgetColumn" , refreshPositions: true , helper : /*"clone"*/ widget.create } ); //#col1 .ui-droppable
-
+			.draggable( { connectToSortable: ".widgetColumn" , refreshPositions: true , helper : widget.create } ); 
 		}
-
 		//Enable the form options
 		quintet.getWidget("form").init();
 	},

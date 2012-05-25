@@ -1,16 +1,17 @@
 
-* { text-indent : 10px; }                                      /* All elements get indented by 10 pixels */
+* { text-indent : 10px; }                                         /* All elements get indented by 10 pixels */
 
 /***/
 /* Builder Section , this will be required when not building forms as well */
 /***/
-#leftColumn    { float:left; width:320px;                       } /* Top level left column is 320 wide */
-#rightColumn   { margin-left:320px;                             } /* Top level right column takes the rest of the screen */
-.tab-content   { overflow:hidden                                } /* Never mess up the right panel, hide the stuff that overflows */
-.panel         { min-height:600px; border:1px solid lightgrey;  } /* Top level panels must be a least 600 high and have a light grey border */
-.panelNoBorder { min-height:600px;                              } /* Top level panels must be a least 600 high, this one should not have a border */
-.paddedStretch { width:100%; padding-right:10px;                } /* For ui setting cells, full width some minor padding on the right */
-.widgetColumn  { min-height:600px; border:1px solid lightgrey;  } /* Container for  */
+#leftColumn     { float:left; width:320px;                       } /* Top level left column is 320 wide */
+#rightColumn    { margin-left:320px;                             } /* Top level right column takes the rest of the screen */
+.tab-content    { overflow:hidden                                } /* Never mess up the right panel, hide the stuff that overflows */
+.panel          { min-height:600px; border:1px solid lightgrey;  } /* Top level panels must be a least 600 high and have a light grey border */
+.panelNoBorder  { min-height:600px;                              } /* Top level panels must be a least 600 high, this one should not have a border */
+.paddedStretch  { width:100%; padding-right:10px;                } /* For ui setting cells, full width some minor padding on the right */
+.widgetColumn   { min-height:600px; border:1px solid lightgrey;  } /* LEGACY : Container for elements, meant to be a td */
+td.widgetColumn { height:600px;                                  } /* Container for elements, meant to be a td */
 
 
 /***/
@@ -19,8 +20,8 @@
 /***/
 
 .formHint {	font-size: .85em;	color: #777;	margin-left:20px; }  /* The form hint text behind a single line text*/
-textarea  { text-indent: 0px; }                                  /* Counter the * text-indent:10px for '*' */
 .required { color:red }                                          /* Color for the asterisk that indicates 'required' */
+textarea  { text-indent: 0px; }                                  /* Counter the * text-indent:10px for '*' */
 
 /***/
 /* CSS Lint Style

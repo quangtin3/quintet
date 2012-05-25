@@ -20,7 +20,7 @@ quintet.registerWidget
 			var o =
 			{
 				name : "<New Form>",
-				columns : 2,	
+				columns : 2,
 				size : "medium", //bootstrap default
 				id : this.id,
 				ref : this.id,
@@ -44,7 +44,7 @@ quintet.registerWidget
 							.cell("paddedStretch").textInput("name", o.name)
 						.row("paddedStretch")
 							.cell().label("columns")
-							.cell("paddedStretch").dropdown( "columns" , "1,2,3" ).style("width:80px;") 
+							.cell("paddedStretch").dropdown( "columns" , "1,2,3" ).style("width:80px;")
 						.row()
 				.html.replace( /field\./g , 'form.' );
 
@@ -60,6 +60,10 @@ quintet.registerWidget
 					receive: function( event, ui )           //Manipulate the button which got dragged so that it turns into the helper
 					{
 						if(!ui.helper) return;                 //Only do this for buttons
+
+						var o = quintet.widget.decodeOptions( ui.helper);
+						if( o && o.onReceive )
+							return quintet.getWidget(o.id).receive( event , ui , o );
 
 						$( "#rightColumn .btn" )               //Find the item, should be a button within the right column
 						.attr('class',ui.helper.attr('class')) //Take over the classes of the helper
@@ -77,13 +81,13 @@ quintet.registerWidget
 				}
 			);
 
-			//Okay, very evil jQuery hack, sortable wont work without at least 1 child 
+			//Okay, very evil jQuery hack, sortable wont work without at least 1 child
 			//Or at least, that's how it looks to me, so lets delete the pro-forma kids
-			$('.killmenow').remove();		
+			$('.killmenow').remove();
 		},
 
 
-		//For the form only, we need an initial initialization 
+		//For the form only, we need an initial initialization
 		init : function()
 		{
 			//Allow the right panel to receive elements
@@ -96,7 +100,7 @@ quintet.registerWidget
 			$(".close").live("click" , function(e){ e.currentTarget.parentElement.parentElement.removeChild(  e.currentTarget.parentElement ); } );
 
 			$(".widget").live("click" , quintet.customize );
-			
+
 			//Enable the UI option fields changing the selected widget
 			$('[id^="field."]').live( 'input' , function(e) { quintet.widget.applyOptions( e.srcElement ); });
 			$('[id^="field."]').live( 'change' , function(e){	quintet.widget.applyOptions( e.srcElement ); }); //Enable the option option changing..
@@ -149,10 +153,10 @@ quintet.registerWidget
 
 						for( var i = 0 ; i < children.length ; i++ )
 						{
-							to.append(children[i]);						
+							to.append(children[i]);
 							//from.remove(children[i]);
 						}
-	
+
 						$(".widgetColumn").last().remove();
 					}
 				}
