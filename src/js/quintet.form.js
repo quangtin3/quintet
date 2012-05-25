@@ -106,7 +106,7 @@ quintet.registerWidget
 			$('[id^="field."]').live( 'change' , function(e){	quintet.widget.applyOptions( e.srcElement ); }); //Enable the option option changing..
 
 			//Create the form options, ( encoding done already )
-			o = this.createOptions();
+			var o = this.createOptions();
 			//Store them under the form
 			$(".quintetForm").append( '<input type="hidden" id="formOptions" name="formOptions" value="' + o.data + '">' );
 			//Create the UI for the form options
@@ -126,46 +126,53 @@ quintet.registerWidget
 			quintet.getWidget("form").apply( o );
 		},
 
+		/* Take a row, normalize,we assume this only got called for a row with widgetColumns */
+		normalizeContentRow : function( queryResult , columnCount )
+		{
+			var columns = queryResult.find(".widgetColumn")
+			//Do we need more columns ?
+			if( columnCount > columns.length )
+			{
+				while( columns.length < columnCount )
+				{
+					queryResult.append( '<td class="widgetColumn ui-sortable ui-droppable" style="width:49%;vertical-align: top;"><div class="killmenow">&nbsp;</td>' );
+					columns = queryResult.find(".widgetColumn")
+				}
+				this.enableWidgetColumns( $(".killmenow").parent() );
+			}
+			//Do need less columns ? , this will need some merging
+			if( columnCount < columns.length )
+			{
+				while( columns.length > columnCount )
+				{
+					var from = queryResult.children().last();
+					var to   = queryResult.children().last().prev()
+					var children = from.children();
+
+					for( var i = 0 ; i < children.length ; i++ )
+						to.append(children[i]);
+
+					from.remove();
+
+					columns = queryResult.find(".widgetColumn")
+				}
+			}
+		},
+
 		apply : function( o )
 		{
 			//Encode options in case they changed
 			o.data = quintet.widget.encodeOptions( o );
 
-			//Do we need any column magic ?
-			if( $(".widgetColumn").length != o.columns )
-			{
-				//Do we need more columns
-				if( $(".widgetColumn").length < o.columns )
-				{
-					while( $(".widgetColumn").length < o.columns )
-						$(".quintetForm").append( '<div class="widgetColumn ui-sortable ui-droppable" style="display:inline-block;width:49%;vertical-align: top;"><div class="killmenow">&nbsp;</div>' );
+			var rows = $('.contentRow').has('.widgetColumn');
 
-					this.enableWidgetColumns( $(".killmenow").parent() );
-				}
-				//Do we need less columns ?
-				if( $(".widgetColumn").length > o.columns )
-				{
-					while( $(".widgetColumn").length > o.columns )
-					{
-						var from = $(".widgetColumn").last();
-						var to   = $(".widgetColumn").eq( o.columns - 1 );
-						var children = from.children();
+			for( var i = 0 ; i < rows.length ; i++ )
+				this.normalizeContentRow( rows.eq(i) , o.columns );
 
-						for( var i = 0 ; i < children.length ; i++ )
-						{
-							to.append(children[i]);
-							//from.remove(children[i]);
-						}
+			$(".widgetColumn").css( "width" , ( Math.floor( 100 / o.columns ) - 1 ) + "%" );
 
-						$(".widgetColumn").last().remove();
-					}
-				}
-				//Size the columns correctly
-				$(".widgetColumn").css( "width" , ( Math.floor( 100 / o.columns ) - 1 ) + "%" );
-			}
 			//Store the new options
 			$(".quintetForm #formOptions").replaceWith( $('<input type="hidden" id="formOptions" name="formOptions" value="' + o.data + '">') );
-
 		},
 	}
 );
