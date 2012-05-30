@@ -14,6 +14,8 @@
  * Also, convention arises : double quotes for style, and attributes in general
  */
 
+'use strict';
+
 quintet.htmlbuilder = { //Let's just throw it into quintet
 
 	html : "",
@@ -51,8 +53,8 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 	   Also we want to abstract the fact that the hints are encoded in html comments */
 	_splitOverHint : function( hint )
 	{
-		if( hint == "content" && this.html.indexOf("cellcontent") != -1 )
-			hint = "cellcontent"
+		if( hint === "content" && this.html.indexOf("cellcontent") !== -1 )
+			hint = "cellcontent";
 
 		this.pre  = this.html.split( "<!--" + hint + "-->" )[0];
 		this.post = this.html.split( "<!--" + hint + "-->" )[1];
@@ -70,7 +72,7 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 	/* Assumed to contain rows, could be in a well, or not */
 	table : function( className )
 	{
-		className = this.classify( className )
+		className = this.classify( className );
 		this._removeHint("cellcontent");
 		this._removeHint("cell");
 		this._removeHint("row");
@@ -82,7 +84,7 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 	/* Assumed to contain cells */
 	row : function( className )
 	{
-		className = this.classify( className )
+		className = this.classify( className );
 		this._removeHint("cellcontent");
 		this._removeHint("cell");
 		this._splitOverHint("row");
@@ -98,7 +100,7 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 	/* Will contain cellcontent, which is distinct from 'content' */
 	cell : function( className )
 	{
-		className = this.classify( className )
+		className = this.classify( className );
 		this._removeHint("cellcontent");
 		this._splitOverHint("cell");
 		this.html = sprintf( '%s<td%s><!--cellcontent--></td>%s' , this.pre , className , this.post );
@@ -109,7 +111,7 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 	colspan : function( span )
 	{
 		var contentHint = this.contentHint();
-		this.html = this.html.replace( "<td><!--" + contentHint + "--></td>" , "<td colspan='" + span + "'><!--" + contentHint + "--></td>"  )
+		this.html = this.html.replace( "<td><!--" + contentHint + "--></td>" , "<td colspan='" + span + "'><!--" + contentHint + "--></td>"  );
 		return this;
 	},
 
@@ -125,19 +127,20 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 	{
 		//Yes, this is will only work for my use case
 		var contentHint = this.contentHint();
-		var contentSplit = this.html.split("<!--" + contentHint + "-->")
+		var contentSplit = this.html.split("<!--" + contentHint + "-->");
 		var tags = contentSplit[0].split("<");
-		for( i = tags.length-1 ; i >= 0 ; i-- )
+    var tagParts;
+		for( var i = tags.length-1 ; i >= 0 ; i-- )
 			if( tags[i].charAt(0) != '/' && tags[i].indexOf("option") != 0 )
 			{
 				if( tags[i].indexOf('style="') == -1 )
 				{
-					var tagParts = tags[i].split(">")
+					tagParts = tags[i].split(">");
 					tags[i] = tagParts[0] + " style='" + s + "'>" + tagParts[1];
 				}
 				else
 				{
-					var tagParts = tags[i].split('style="')
+					tagParts = tags[i].split('style="');
 					tags[i] = tagParts[0] + 'style="' + s + ';' + tagParts[1];
 				}
 				this.html = tags.join("<") + "<!--" + contentHint + "-->" + contentSplit[1];
