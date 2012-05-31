@@ -43,7 +43,7 @@ quintet.widgets.pick =
     //get options or create new options
     //this gets messed up, hence the go-around for the original self
     if( !o || (o instanceof jQuery.Event) )
-      o = quintet.widgets.date.createOptions();
+      o = quintet.widgets.pick.createOptions();
 
     //use the style options of line
     quintet.widgets.line.styleOptions( o );
@@ -57,7 +57,7 @@ quintet.widgets.pick =
                         '<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
                         '<div class="%(id)s widget">' +
                           '<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
-                          '<input type="text" id="actual_%(ref)s"></input>' +
+                          '<select multiple="multiple" " id="actual_%(ref)s"></select>' +
                           '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
                         '</div>' +
                     '</div>' , o )
@@ -67,7 +67,22 @@ quintet.widgets.pick =
   //When cloning this, consider grepping for postCreate
   postCreate : function(o)
   {
+    o._sourceListLabel = o.sourceLabel ? o.sourceLabel : 'Options';
+    o._targetListLabel = o.targetLabel ? o.targetLabel : 'Chosen';
+
+    //Fur now
+    o._items = [ { value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false }, ];
+
     //$( ".datepicker" ).datepicker();
-    $("#actual_"+o.ref).pickList( );
+    $("#actual_"+o.ref).pickList
+    ( 
+      {
+        sourceListLabel : o._sourceListLabel,
+        targetListLabel : o._targetListLabel,
+        items : o._items,
+      }
+    );
+    //Stop dragging on the picklist itself
+    $(".pickList_list").mousedown(function(event) { event.stopImmediatePropagation(); } );
   }
 };
