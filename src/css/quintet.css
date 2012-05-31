@@ -23,8 +23,21 @@ td.widgetColumn { height:300px;                                  } /* Container 
 .required { color:red }                                          /* Color for the asterisk that indicates 'required' */
 textarea  { text-indent: 0px; }                                  /* Counter the * text-indent:10px for '*' */
 
+/* Picklist css */
+.pickList_sourceListContainer, .pickList_controlsContainer, .pickList_targetListContainer { float: left; margin: 0.25em; }
+.pickList_controlsContainer { text-align: center; }
+.pickList_controlsContainer button { display: block; width: 100%; text-align: center; }
+.pickList_list { list-style-type: none; margin: 0; padding: 0; float: left; width: 150px; height: 75px; border: 1px inset; overflow-y: auto; cursor: default; }
+.pickList_selectedListItem { background-color: #A3C8F5; }
+.pickList_listLabel { font-size: 0.9em; font-weight: bold; text-align: center; }
+.pickList_clear { clear: both; }
+
+
 /***/
 /* CSS Lint Style
 /***/
 
 .stretch { width:100% }
+
+
+?
