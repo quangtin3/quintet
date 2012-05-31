@@ -23,6 +23,10 @@ quintet.widgets.pick =
     var o = quintet.widgets.line.createOptions(); //<-- Lean on line
     o.label = "List " + counter;
     o.hint = '';
+    o.chosen = '';
+    o.choices = '';
+    o.sourceLabel = 'Options';
+    o.targetLabel = 'Chosen';
     o.required = false;
     o.id = this.id;
     o.ref = this.id + counter;
@@ -33,7 +37,72 @@ quintet.widgets.pick =
   //+1 for innerHTML
   createOptionsUI : function ( id , element )
   {
-    quintet.widgets.line.createOptionsUI( id , element ); //<-- Lean on line
+
+    var o = quintet.widget.decodeOptions( element );
+
+    $("#"+id)[0].innerHTML =
+      quintet.htmlbuilder
+      .clear()
+      .h3("Basics")
+      .well()
+        .table()
+          .row()
+            .cell().label("label")
+            .cell("paddedStretch").textInput("label", o.label)
+          .row()
+            .cell().label("default")
+            .cell("paddedStretch").textInput("value", o.value)
+          .row()
+        .table()
+          .row()
+          .cell().label("sourceLabel")
+            .cell("paddedStretch").textInput("sourceLabel", o.sourceLabel)
+          .row()
+            .cell().label("targetLabel")
+            .cell("paddedStretch").textInput("targetLabel", o.targetLabel)
+          .row()
+        .table("stretch")
+          .row()
+            .cell("paddedStretch").colspan(2).label("hint").textArea("hint", o.hint).stretch()
+          .row()
+            .cell("paddedStretch").colspan(2).label("choices").textArea("choices", o.choices).stretch()
+          .row()
+            .cell("paddedStretch").colspan(2).label("chosen").textArea("chosen", o.choices).stretch()
+          .row()
+        .table("stretch")
+          .row("stretch")
+            .cell().fontSelector("font")
+            .cell().dropdown("size" , "x-small,small,medium,large,x-large" ).style("width:130px") //sizeSelector("size") x-small,small,medium,large,x-large
+          .row()
+            .cell().colspan(2)
+              .checkbox("bold" , o.bold ).text("&nbsp;")
+              .checkbox("italic" , o.italic ).text("&nbsp;")
+              .checkbox("underline" , o.underline ).text("&nbsp;")
+      .h3("Value")
+      .well()
+        .table()
+          .row()
+            .cell().checkbox("required" , o.required )
+      .html;
+
+      //For comments, see quintet.singletextfield.js
+      $('#field\\.dummy\\.font').fontPickerRegios({
+          defaultFont: 'Helvetica Neue',
+          callbackFunc: function(fontName)
+            {
+              quintet.widget.applyOptions( $('#field\\.font').val(fontName)[0] );
+            },
+          selid: 'field\\.dummy\\.font'
+      });
+
+      //Init the font size
+      $("#field\\.size").val( o.size );
+
+      //Init the filter
+      $("#field\\.filter").val( o.filter );
+
+      //Build the link from the option field back to the widget!
+      quintet.widget.current = o.ref;
   },
 
   /* Mandatory : all widgets must have a create */
@@ -67,19 +136,27 @@ quintet.widgets.pick =
   //When cloning this, consider grepping for postCreate
   postCreate : function(o)
   {
-    o._sourceListLabel = o.sourceLabel ? o.sourceLabel : 'Options';
-    o._targetListLabel = o.targetLabel ? o.targetLabel : 'Chosen';
-
-    //Fur now
-    o._items = [ { value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false },{ value: 6, label: "Afterwards #1", selected: false }, ];
+  	var i, list, choicesCount;
+  	//Set up the items
+    o._items = [];
+    //Loop over the choices to fill up _items
+    list = o.choices.split("\n");
+    choicesCount = list.length;
+    for( i = 0 ; i < list.length ; i++ )
+    	o._items.push( {  value : i /*list[i]*/ , label : list[i] , selected : false } );
+    //Now do the chosen items ( index starting from the count of possible choices )
+    list = o.chosen.split("\n");
+    for( i = 0 ; i < list.length ; i++ )
+    	o._items.push( {  value : choicesCount + i /*list[i]*/ , label : list[i] , selected : true } );
 
     //$( ".datepicker" ).datepicker();
     $("#actual_"+o.ref).pickList
-    ( 
+    (
       {
-        sourceListLabel : o._sourceListLabel,
-        targetListLabel : o._targetListLabel,
-        items : o._items,
+        sourceListLabel : o.sourceLabel,
+        targetListLabel : o.targetLabel,
+        items           : o._items,
+        sortAttribute   : "value",
       }
     );
     //Stop dragging on the picklist itself

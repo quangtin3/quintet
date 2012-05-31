@@ -49,7 +49,7 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 		this.html = a.join("");
 	},
 
-	/* We dont want to get rid of the hint, just presert content before it 
+	/* We dont want to get rid of the hint, just presert content before it
 	   Also we want to abstract the fact that the hints are encoded in html comments */
 	_splitOverHint : function( hint )
 	{
@@ -157,6 +157,11 @@ quintet.htmlbuilder = { //Let's just throw it into quintet
 	//<label for="field.%s">%s</label>
 	label : function( caption )
 	{
+		caption = caption
+    	// insert a space before all caps
+    	.replace(/([A-Z])/g, '&nbsp;$1')
+    	// uppercase the first character
+    	.replace(/^./, function(str){ return str.toUpperCase(); })
 		this._splitOverHint("content");
 		this.html = sprintf( '%s<label for="field.%s">%s</label>%s' , this.pre , caption , caption.capitalizeFirst() , this.post );
 		return this;
