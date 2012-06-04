@@ -1,6 +1,7 @@
 /*
  * quintet.pick.js : all logic pertaining to picklists
  * 'extends' : quintet.singletextfield
+ * 'extends' : http://code.google.com/p/jquery-ui-picklist/
  *
  * Copyright 2012 konijn@gmail.com aka Tom Demuyt
  *
@@ -27,6 +28,7 @@ quintet.widgets.pick =
     o.choices = '';
     o.sourceLabel = 'Options';
     o.targetLabel = 'Chosen';
+    o.size = 7;
     o.required = false;
     o.id = this.id;
     o.ref = this.id + counter;
@@ -52,6 +54,9 @@ quintet.widgets.pick =
           .row()
             .cell().label("default")
             .cell("paddedStretch").textInput("value", o.value)
+          .row()
+            .cell().label("size")
+            .cell("paddedStretch").textInput("size", o.size)
           .row()
         .table()
           .row()
@@ -98,6 +103,10 @@ quintet.widgets.pick =
       //Init the font size
       $("#field\\.size").val( o.size );
 
+      //Stretch the choices and chosen textarea
+      $("#field\\.choices").attr( "rows" , 12 )
+      $("#field\\.chosen").attr( "rows" , 12 )
+
       //Build the link from the option field back to the widget!
       quintet.widget.current = o.ref;
   },
@@ -113,6 +122,13 @@ quintet.widgets.pick =
 
     //use the style options of line
     quintet.widgets.line.styleOptions( o );
+
+    //Rationalize size
+    o.size = o.size * 1;
+    if( isNaN( Math.floor( o.size ) ) )
+    	o.size = 7;
+    if( o.size < 1 || o.size > 15 ) //<- Arbitrary value, w00t !!
+    	o.size = 7;
 
     o.data = quintet.widget.encodeOptions( o );
 
@@ -154,6 +170,11 @@ quintet.widgets.pick =
         sortAttribute   : "value",
       }
     );
+
+    //Set the height
+    var itemHeight = $(".pickList_listItem").height();
+    if( itemHeight )
+    	$(".pickList_list").height( o.size * itemHeight )
 
     //Stop dragging on the picklist itself
     $(".pickList_list").mousedown(function(event) { event.stopImmediatePropagation(); } );

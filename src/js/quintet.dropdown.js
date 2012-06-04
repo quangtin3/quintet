@@ -28,11 +28,11 @@ quintet.widgets.dropdown =
     o.required = false;
     o.id = this.id;
     o.ref = this.id + counter;
+    o.size = 7;
     return o;
   },
 
-  //Really, I am expecting the id to be
-  //+1 for innerHTML
+  //What the tin says
   createOptionsUI : function ( id , element )
   {
 
@@ -50,6 +50,9 @@ quintet.widgets.dropdown =
           .row()
             .cell().label("default")
             .cell("paddedStretch").textInput("value", o.value)
+          .row()
+            .cell().label("size")
+            .cell("paddedStretch").textInput("size", o.size)
           .row()
         .table("stretch")
           .row()
@@ -86,6 +89,9 @@ quintet.widgets.dropdown =
       //Init the font size
       $("#field\\.size").val( o.size );
 
+      //Stretch the choices textarea
+      $("#field\\.choices").attr( "rows" , 12 )
+
       //Build the link from the option field back to the widget!
       quintet.widget.current = o.ref;
   },
@@ -109,6 +115,13 @@ quintet.widgets.dropdown =
     for( i = 0 ; i < list.length ; i++ )
     	o._items = o._items + sprintf('<option value="%s">%s</option>' , list[i] , list[i] );
 
+    //Rationalize size
+    o.size = o.size * 1;
+    if( isNaN( Math.floor( o.size ) ) )
+    	o.size = 7;
+    if( o.size < 1 || o.size > 15 ) //<- Arbitrary value, w00t !!
+    	o.size = 7;
+
     o.data = quintet.widget.encodeOptions( o );
 
     //Contrary to the original, I believe this to be
@@ -118,7 +131,7 @@ quintet.widgets.dropdown =
                         '<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
                         '<div class="%(id)s widget">' +
                           '<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
-                          '<select multiple="multiple" " id="actual_%(ref)s">%(_items)s</select>' +
+                          '<select multiple="multiple" " id="actual_%(ref)s" size="%(size)s">%(_items)s</select>' +
                           '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
                         '</div>' +
                     '</div>' , o )
