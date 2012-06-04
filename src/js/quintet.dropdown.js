@@ -1,5 +1,5 @@
 /*
- * quintet.pick.js : all logic pertaining to picklists
+ * quintet.dropdown.js : all logic pertaining to dropdowns or expanded lists
  * 'extends' : quintet.singletextfield
  *
  * Copyright 2012 konijn@gmail.com aka Tom Demuyt
@@ -11,9 +11,9 @@
 
 'use strict';
 
-quintet.widgets.pick =
+quintet.widgets.dropdown =
 {
-  id : "pick",
+  id : "dropdown",
 
   /* Mandatory : all widgets must have a createOptions */
   /* These options will get serialized and stored in the backend for actual use */
@@ -21,12 +21,10 @@ quintet.widgets.pick =
   {
     var counter = $("."+this.id).length + 1;
     var o = quintet.widgets.line.createOptions(); //<-- Lean on line
-    o.label = "List " + counter;
+    o.value = '';
+    o.label = "Choice " + counter;
     o.hint = '';
-    o.chosen = '';
     o.choices = '';
-    o.sourceLabel = 'Options';
-    o.targetLabel = 'Chosen';
     o.required = false;
     o.id = this.id;
     o.ref = this.id + counter;
@@ -53,21 +51,11 @@ quintet.widgets.pick =
             .cell().label("default")
             .cell("paddedStretch").textInput("value", o.value)
           .row()
-        .table()
-          .row()
-          .cell().label("sourceLabel")
-            .cell("paddedStretch").textInput("sourceLabel", o.sourceLabel)
-          .row()
-            .cell().label("targetLabel")
-            .cell("paddedStretch").textInput("targetLabel", o.targetLabel)
-          .row()
         .table("stretch")
           .row()
             .cell("paddedStretch").colspan(2).label("hint").textArea("hint", o.hint).stretch()
           .row()
             .cell("paddedStretch").colspan(2).label("choices").textArea("choices", o.choices).stretch()
-          .row()
-            .cell("paddedStretch").colspan(2).label("chosen").textArea("chosen", o.choices).stretch()
           .row()
         .table("stretch")
           .row("stretch")
@@ -109,53 +97,39 @@ quintet.widgets.pick =
     //get options or create new options
     //this gets messed up, hence the go-around for the original self
     if( !o || (o instanceof jQuery.Event) )
-      o = quintet.widgets.pick.createOptions();
+      o = quintet.widgets.dropdown.createOptions();
 
     //use the style options of line
     quintet.widgets.line.styleOptions( o );
 
+    //options creation
+    var i, list;
+    list = o.choices.split("\n");
+    o._items = '';
+    for( i = 0 ; i < list.length ; i++ )
+    	o._items = o._items + sprintf('<option value="%s">%s</option>' , list[i] , list[i] );
+
     o.data = quintet.widget.encodeOptions( o );
 
-    //Return the element
+    //Contrary to the original, I believe this to be
+    //more maintainable than coding all this with DOM manipulation
+
     return $( sprintf('<div id="%(ref)s">%(_closeButton)s' +
                         '<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
                         '<div class="%(id)s widget">' +
                           '<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
-                          '<select multiple="multiple" " id="actual_%(ref)s"></select>' +
+                          '<select multiple="multiple" " id="actual_%(ref)s">%(_items)s</select>' +
                           '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
                         '</div>' +
                     '</div>' , o )
       );
   },
+
   //Lets just hope that reinits are not too bad
   //When cloning this, consider grepping for postCreate
   postCreate : function(o)
   {
-  	var i, list, choicesCount;
-  	//Set up the items
-    o._items = [];
-    //Loop over the choices to fill up _items
-    list = o.choices.split("\n");
-    choicesCount = list.length;
-    for( i = 0 ; i < list.length ; i++ )
-    	o._items.push( {  value : i /*list[i]*/ , label : list[i] , selected : false } );
-    //Now do the chosen items ( index starting from the count of possible choices )
-    list = o.chosen.split("\n");
-    for( i = 0 ; i < list.length ; i++ )
-    	o._items.push( {  value : choicesCount + i /*list[i]*/ , label : list[i] , selected : true } );
-
-    //Initialize the widget
-    $("#actual_"+o.ref).pickList
-    (
-      {
-        sourceListLabel : o.sourceLabel,
-        targetListLabel : o.targetLabel,
-        items           : o._items,
-        sortAttribute   : "value",
-      }
-    );
-
-    //Stop dragging on the picklist itself
-    $(".pickList_list").mousedown(function(event) { event.stopImmediatePropagation(); } );
+    //Initialize the list
+    $("#actual_"+o.ref).val( o.value );
   }
 };
