@@ -4,24 +4,35 @@
 /***/
 /* Builder Section , this will be required when not building forms as well */
 /***/
-#leftColumn     { float:left; width:320px;                       } /* Top level left column is 320 wide */
-#rightColumn    { margin-left:320px;                             } /* Top level right column takes the rest of the screen */
-.tab-content    { overflow:hidden                                } /* Never mess up the right panel, hide the stuff that overflows */
-.panel          { min-height:600px; border:1px solid lightgrey;  } /* Top level panels must be a least 600 high and have a light grey border */
-.panelNoBorder  { min-height:600px;                              } /* Top level panels must be a least 600 high, this one should not have a border */
-.paddedStretch  { width:100%; padding-right:10px;                } /* For ui setting cells, full width some minor padding on the right */
-.widgetColumn   { min-height:600px; border:1px solid lightgrey;  } /* LEGACY : Container for elements, meant to be a td */
-td.widgetColumn { height:300px;                                  } /* Container for elements, meant to be a td */
-
+#leftColumn         { float:left; width:320px;                       } /* Top level left column is 320 wide */
+#rightColumn        { margin-left:320px;                             } /* Top level right column takes the rest of the screen */
+.tab-content        { overflow:hidden                                } /* Never mess up the right panel, hide the stuff that overflows */
+.panel              { min-height:600px; border:1px solid lightgrey;  } /* Top level panels must be a least 600 high and have a light grey border */
+.panelNoBorder      { min-height:600px;                              } /* Top level panels must be a least 600 high, this one should not have a border */
+.paddedStretch      { width:100%; padding-right:10px;                } /* For ui setting cells, full width some minor padding on the right */
+.widgetColumn       { min-height:600px; border:1px solid lightgrey;  } /* LEGACY : Container for elements, meant to be a td */
+td.widgetColumn     { height:300px; padding-bottom: 30px;            } /* Container for elements, meant to be a td */
+.widgetButton       { text-indent:30px; cursor:move; margin:5px;     } /* Widget buttons */
+.widgetButton:hover { background-color: #E6E6E6;
+                      background-color: #D9D9D9 9;
+                      background-image: none;
+                     -webkit-transition: background-position 0.1s linear;
+                     -moz-transition: background-position 0.1s linear;
+                     -ms-transition: background-position 0.1s linear;
+                     -o-transition: background-position 0.1s linear;
+                     -moz-box-shadow: 1px 1px 3px #999;
+                     -webkit-box-shadow: 1px 1px 3px #999;
+											box-shadow: 1px 1px 3px #999;                        } /* Widget buttons, the hovering part , fuuuuugly */
 
 /***/
 /* Widget Section , this will be required when not building forms as well
 /* Non obvious stuff
 /***/
 
-.formHint {	font-size: .85em;	color: #777;	margin-left:20px; }  /* The form hint text behind a single line text*/
-.required { color:red }                                          /* Color for the asterisk that indicates 'required' */
-textarea  { text-indent: 0px; }                                  /* Counter the * text-indent:10px for '*' */
+.formHint {	font-size:.85em;	color:#777;	margin-left:20px; } /* The form hint text behind a single line text*/
+.required { color:red; }                                      /* Color for the asterisk that indicates 'required' */
+textarea  { text-indent:0px; }                                /* Counter the * text-indent:10px for '*' */
+.quintetDropdown { width:40%; }                               /* 220px of bootstrap is often too small */
 
 /* Picklist css */
 .pickList_sourceListContainer, .pickList_controlsContainer, .pickList_targetListContainer { float: left; margin: 0.25em; }
@@ -31,13 +42,15 @@ textarea  { text-indent: 0px; }                                  /* Counter the 
 .pickList_selectedListItem { background-color: #A3C8F5; }
 .pickList_listLabel { font-size: 0.9em; font-weight: bold; text-align: center; }
 .pickList_clear { clear: both; }
-
+.pickList_listContainer { width:40% }
+.pickList_list { width:100% }
 
 /***/
 /* CSS Lint Style
 /***/
 
-.stretch { width:100% }
-
+.stretch   { width:100% }
+.stretch90 { width:90%  }
+.noTextIndent { text-indent:0px }
 
 ?
