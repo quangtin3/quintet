@@ -19,7 +19,7 @@ quintet.widgets.line =
     var counter = $("."+this.id).length + 1;
     var o =
     {
-      label : "Single field text '" + counter + "'",
+      label : "Field" + ( counter==1 ? "" : ( " " + counter ) ),
       value : "",
       hint : "",
       font : "default",
