@@ -28,7 +28,15 @@ var quintet =
       var widget = this.widgets[key];
       //The create button has the id of the widget id
       $( "#" + widget.id )
-      .draggable( { connectToSortable: ".widgetColumn" , refreshPositions: true , helper : widget.create } ); 
+      .draggable( 
+        { 
+          connectToSortable: ".widgetColumn" , 
+          refreshPositions: true , 
+          helper : widget.create , 
+          start: function(e, ui) {  e.stopImmediatePropagation();  } , 
+          drag: function(e, ui) {  e.stopImmediatePropagation();  } 
+        } 
+      ); 
     }
     //Enable the form options
     quintet.widgets.form.init();
