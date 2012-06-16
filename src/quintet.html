@@ -39,6 +39,7 @@
 <script type="text/javascript" src="js/quintet.section.js"></script>
 <script type="text/javascript" src="js/quintet.header.js"></script>
 <script type="text/javascript" src="js/quintet.email.js"></script>
+<script type="text/javascript" src="js/quintet.blurb.js"></script>
 <script type="text/javascript" src="js/quintet.form.js"></script>
 <script type="text/javascript" src="js/quintet.name.js"></script>
 <script type="text/javascript" src="js/quintet.date.js"></script>
@@ -61,41 +62,40 @@ $(function()
 		<ul class="nav nav-tabs" id="tabs">
 			<li><a href="#fields"   data-toggle="tab">Add field</a></li>
 			<li><a href="#settings" data-toggle="tab">Field settings</a></li>
-			<li><a href="#form"     data-toggle="tab">Form</a></li>
+			<li><a href="#manage"     data-toggle="tab">Form</a></li>
 		</ul>
 
 		<div class="tab-content">
 			<div class="tab-pane active" id="fields">
-				<ul style="list-style-type: none;">
-				<li><b>Standard Fields</b></li>
-					<li>&nbsp;</li>
-					<li><div id="header" class="btn">Header text</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="pick" class="btn">2 Panels list</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="line" class="btn">Single line field</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="box" class="btn">Multi line field</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="name" class="btn">Full name</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="email" class="btn">Email</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="checkbox" class="btn">Option</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="section" class="btn">Section</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="date" class="btn">Date</div><br></li>
-					<li>&nbsp;</li>
-					<li><div id="dropdown" class="btn">Choice</div><br></li>
-					<li>&nbsp;</li>
-					<li><b>Fancy stuff</b><br></li>
-					<li>&nbsp;</li>
-					<li><div id="text" class="btn">Explanation text</div><br></li>
-				<ul>
+
+				<button class="btn stretch90" data-toggle="collapse" data-target=".genericFields">Generic Fields</button>
+				<div><!-- class="personFields  fieldCategory" -->
+					<div id="header"   class="widgetButton">Heading</div>
+					<div id="blurb"    class="widgetButton">Info</div>
+					<div id="line"     class="widgetButton">Simple field</div>
+					<div id="box"      class="widgetButton">Large field</div>
+					<div id="date"     class="widgetButton">Date</div>
+					<div id="dropdown" class="widgetButton">Single Choice list</div>
+					<div id="pick"     class="widgetButton">Multiple Choice list</div>
+					<div id="checkbox" class="widgetButton">Option</div>
+				</div>
+
+				<button class="btn stretch90" data-toggle="collapse" data-target=".personFields">Person Fields</button>
+				<div>
+					<div id="name"  class="widgetButton">Full name</div>
+					<div id="email" class="widgetButton">Email</div>
+				</div>
+
+				<button class="btn stretch90" data-toggle="collapse" data-target=".advancedFields">Advanced Widgets</button>
+				<div>
+					<div id="section" class="widgetButton">Section</div>
+				</div>
 			</div>
 			<div class="tab-pane" id="settings"></div>
-			<div class="tab-pane" id="form">	</div>
+			<div class="tab-pane" id="manage">
+				<div id="formOptions"></div>
+				<button class="btn noTextIndent" id="testButton">Test</button>
+			</div>
 		</div>
 
 	</div>
