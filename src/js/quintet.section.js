@@ -53,7 +53,7 @@ quintet.widgets.section =
   receive : function( event, ui , o )
   {
     //Get rid of the dragged button
-    $( "#rightColumn .btn" ).remove();
+    $( "#rightColumn .widgetButton" ).remove();
 
     //Add the new section at the bottom of the table
     $(".quintetForm").append(  this.create(o) );

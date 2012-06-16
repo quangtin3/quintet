@@ -20,7 +20,7 @@ quintet.widgets.header =
   {
     var counter = $("."+this.id).length + 1;
     var o = quintet.widgets.line.createOptions(); //<-- Lean on line
-    o.label = "Header " + counter;
+    o.label = "Heading" + ( counter==1 ? "" : ( " " + counter ) )
     o.id = this.id;
     o.ref = this.id + counter;
     return o;

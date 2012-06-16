@@ -131,7 +131,7 @@ quintet.widgets.dropdown =
                         '<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
                         '<div class="%(id)s widget">' +
                           '<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
-                          '<select multiple="multiple" " id="actual_%(ref)s" size="%(size)s">%(_items)s</select>' +
+                          '<select multiple="multiple" " class="quintetDropdown" id="actual_%(ref)s" size="%(size)s">%(_items)s</select>' +
                           '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
                         '</div>' +
                     '</div>' , o )
