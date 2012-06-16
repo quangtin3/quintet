@@ -68,7 +68,7 @@ quintet.widgets.form =
           if( o && o.onReceive )
             return quintet.widget.find( o.id ).receive( event , ui , o );
 
-          $( "#rightColumn .btn" )               //Find the item, should be a button within the right column
+          $( "#rightColumn .widgetButton" )               //Find the item, should be a button within the right column
           .attr('class',ui.helper.attr('class')) //Take over the classes of the helper
           .attr('style',ui.helper.attr('style')) //Take over the style of the helper
           .attr('id'   ,ui.helper.attr('id'))    //Take over the id of the helper
@@ -100,13 +100,23 @@ quintet.widgets.form =
     //Allow the right panel to receive elements
     this.enableWidgetColumns( $( ".widgetColumn" ) );
 
+    //Make the right hand accordion work
+    $(document).on('click' , '.btn.stretch90' , function(e){ $(".fieldCategory").collapse('hide')  } );
+    //And open the first of the accordion
+    $(".btn.stretch90").first().click();
+
     //Make all the form element close buttons work
     //The assumption is that elements are not nested
     //That the close button's parent has all elements that need removal
     //That the close button's parent's parent is the container
     $(".close").live("click" , function(e){ e.currentTarget.parentElement.parentElement.removeChild(  e.currentTarget.parentElement ); } );
 
+    //Clicking a widget allows the user to customize it
+    //TODO : separate out design from run-time behaviour
     $(".widget").live("click" , quintet.customize );
+
+    //Allow accordions to accord
+    $( ".accordion" ).accordion( { autoHeight: false } );
 
     //Enable the UI option fields changing the selected widget
     $('[id^="field."]').live( 'input' , function(e) { quintet.widget.applyOptions( e.srcElement ); });
@@ -117,7 +127,7 @@ quintet.widgets.form =
     //Store them under the form
     $(".quintetForm").append( '<input type="hidden" id="formOptions" name="formOptions" value="' + o.data + '">' );
     //Create the UI for the form options
-    this.createOptionsUI( 'form' , $(".quintetForm") );
+    this.createOptionsUI( 'formOptions' , $(".quintetForm") );
     //Enable the UI option fields changing this form
     $('[id^="form."]').live( 'input' , function(e) {  quintet.widgets.form.applyOptions( e.srcElement ); });
     $('[id^="form."]').live( 'change' , function(e){  quintet.widgets.form.applyOptions( e.srcElement ); }); //Enable the option option changing..
@@ -133,6 +143,7 @@ quintet.widgets.form =
     quintet.widgets.form.apply( o );
   },
 
+  /* Add columns on the right if required ( check the form column count ), enable any new new columns */
   normalizeMissingColumns : function( queryResult , columnCount , columns )
   {
     while( columns.length < columnCount )
@@ -143,6 +154,8 @@ quintet.widgets.form =
     this.enableWidgetColumns( $(".killmenow").parent() );      
   },
 
+  /* Take columns on the right that are no longer required if we reduced the column count of the form */
+  /* Move the content of these columns to the column to the left */
   normalizeObsoleteColumns : function( queryResult , columnCount , columns )
   {
     while( columns.length > columnCount )
