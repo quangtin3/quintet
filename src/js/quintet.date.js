@@ -21,7 +21,7 @@ quintet.widgets.date =
   {
     var counter = $("."+this.id).length + 1;
     var o = quintet.widgets.line.createOptions(); //<-- Lean on line
-    o.label = "Date " + counter;
+    o.label = "Date " + ( counter==1 ? "" : ( " " + counter ) );
     o.hint = '';
     o.required = false;
     o.id = this.id;
