@@ -38,8 +38,9 @@ var quintet =
         } 
       ); 
     }
-    //Enable the form options
-    quintet.widgets.form.init();
+    //Enable the builder, if the builder is present
+    if( quintet.builder )
+      quintet.builder.init();
   },
 
   //A helper function, might get moved to quintetHelp if this file gets too large
