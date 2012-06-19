@@ -54,84 +54,6 @@ quintet.widgets.form =
       $("#form\\.columns").val( o.columns );
   },
 
-  /* See http://jqueryui.com/demos/sortable/#connect-lists */
-  enableWidgetColumns : function ( queryResult )
-  {
-    queryResult.sortable(
-      {
-        receive: function( event, ui )           //Manipulate the button which got dragged so that it turns into the helper
-        {
-          if(!ui.helper) return; //Only do this for buttons
-
-          var o = quintet.widget.decodeOptions( ui.helper );
-          var widget = quintet.widget.find( o.id );
-          if( o && o.onReceive )
-            return quintet.widget.find( o.id ).receive( event , ui , o );
-
-          $( "#rightColumn .widgetButton" )               //Find the item, should be a button within the right column
-          .attr('class',ui.helper.attr('class')) //Take over the classes of the helper
-          .attr('style',ui.helper.attr('style')) //Take over the style of the helper
-          .attr('id'   ,ui.helper.attr('id'))    //Take over the id of the helper
-          .css('position', 'static')             //But ignore position
-          .css('width', 'auto')                  //But ignore width
-          .css('height', 'auto')                 //But ignore height
-          .css('top', 'auto')                    //But ignore top
-          .css('left', 'auto')                   //But ignore left
-          .css('display', 'block')               //Make sure this gets displayed as a block
-          .html( ui.helper[0].innerHTML );       //Take over the innerHTML of the helper
-
-          //Do we need to do some post-creation stuff ? ( Calendars etc. )
-          if( widget.postCreate )
-            widget.postCreate(o);
-        },
-        connectWith: ".widgetColumn"
-      }
-    );
-
-    //Okay, very evil jQuery hack, sortable wont work without at least 1 child
-    //Or at least, that's how it looks to me, so lets delete the pro-forma kids
-    $('.killmenow').remove();
-  },
-
-
-  //For the form only, we need an initial initialization
-  init : function()
-  {
-    //Allow the right panel to receive elements
-    this.enableWidgetColumns( $( ".widgetColumn" ) );
-
-    //Make the right hand accordion work
-    $(document).on('click' , '.btn.stretch90' , function(e){ $(".fieldCategory").collapse('hide')  } );
-    //And open the first of the accordion
-    $(".btn.stretch90").first().click();
-
-    //Make all the form element close buttons work
-    //The assumption is that elements are not nested
-    //That the close button's parent has all elements that need removal
-    //That the close button's parent's parent is the container
-    $(".close").live("click" , function(e){ e.currentTarget.parentElement.parentElement.removeChild(  e.currentTarget.parentElement ); } );
-
-    //Clicking a widget allows the user to customize it
-    //TODO : separate out design from run-time behaviour
-    $(".widget").live("click" , quintet.customize );
-
-    //Allow accordions to accord
-    $( ".accordion" ).accordion( { autoHeight: false } );
-
-    //Enable the UI option fields changing the selected widget
-    $('[id^="field."]').live( 'input' , function(e) { quintet.widget.applyOptions( e.srcElement ); });
-    $('[id^="field."]').live( 'change' , function(e){  quintet.widget.applyOptions( e.srcElement ); }); //Enable the option option changing..
-
-    //Create the form options, ( encoding done already )
-    var o = this.createOptions();
-    //Store them under the form
-    $(".quintetForm").append( '<input type="hidden" id="formOptions" name="formOptions" value="' + o.data + '">' );
-    //Create the UI for the form options
-    this.createOptionsUI( 'formOptions' , $(".quintetForm") );
-    //Enable the UI option fields changing this form
-    $('[id^="form."]').live( 'input' , function(e) {  quintet.widgets.form.applyOptions( e.srcElement ); });
-    $('[id^="form."]').live( 'change' , function(e){  quintet.widgets.form.applyOptions( e.srcElement ); }); //Enable the option option changing..
-  },
   /* Non generic version of apply options, for form only */
   applyOptions : function( element )
   {
@@ -151,7 +73,9 @@ quintet.widgets.form =
       queryResult.append( '<td class="widgetColumn ui-sortable ui-droppable" style="width:49%;vertical-align: top;"><div class="killmenow">&nbsp;</td>' );
       columns = queryResult.find(".widgetColumn");
     }
-    this.enableWidgetColumns( $(".killmenow").parent() );      
+
+    if( quintet.builder )
+      quintet.builder.enableWidgetColumns( $(".killmenow").parent() );      
   },
 
   /* Take columns on the right that are no longer required if we reduced the column count of the form */
@@ -183,7 +107,7 @@ quintet.widgets.form =
     if( columnCount < columns.length )
       this.normalizeObsoleteColumns( queryResult , columnCount , columns );
   },
-  
+
   //In case we add new content rows, we need to adjust columns,
   //We keep the logic in quintet.forms.js
   reApply : function ()
@@ -210,5 +134,87 @@ quintet.widgets.form =
 
     //Store the new options
     $(".quintetForm #formOptions").replaceWith( $('<input type="hidden" id="formOptions" name="formOptions" value="' + o.data + '">') );
+  },
+
+  /* Serialize a form, very simple json structure is derived from 'o'
+    |
+    |- form(1), contains the options/data for the form ( form name, column count etc. )
+    |- name(1), just to make life mildly easier for debugger folks
+    |- rows(0..n)
+         |- type(1), contains either 'section' or 'widgets'
+         |- data(1), only present for widgets, contains options/data for the section
+         |- columns(0..n), only present for widget columns, contains the data/options for each child widget, in order
+               |- data(1), presents data/options for 1 widget
+  */
+  serialize : function( )
+  {
+    var form = $(".quintetForm").first();
+    var formOptions = form.find( "#formOptions" )[0].value
+    var rows = form.find(".contentRow");
+
+    var o = { form : formOptions , name : JSON.parse( atob(formOptions) ).name , rows : [] }
+
+    var widgetColumns, i , section, col, widgets, data;
+
+    for( i = 0 ; i < rows.length ; i ++ )
+    {
+      widgetColumns = rows.eq( i ).find( ".widgetColumn" );
+      if( widgetColumns.length )
+      {
+        section = { type : 'widgets' , columns : [] }
+        //We could have up to 3 widget columns
+        for( col = 0 ; col < widgetColumns.length ; col++ )
+        {
+          section.columns.push( { data : [] } );
+          widgetColumns.eq(col).find("#options").each( function( key ,value ){ section.columns[col].data.push( value.value ) } )
+        }
+        o.rows.push( section );
+      }
+      else
+      { //Hackerish, for now rows widget widgets can only be section headers
+        o.rows.push( { type : 'section' , data : rows.eq( i ).find( "#options" )[0].value } );
+      }
+    }
+    console.log( o );
+    console.log( JSON.stringify( o ) );
+    return JSON.stringify( o );
+  },
+
+  /* Not sure this belongs here.. This is for testing a form */
+  popupTest : function( data )
+  {
+    var w = window.open( 'testpopup.html' , 'name' , 'height=200,width=150' );
+  	if (window.focus) 
+      w.focus()
+    return false;
+  },
+
+  /* Build a form from serialized data  */
+  build : function ( data )
+  {
+    var i,row;
+    //Get back to the object
+    data = JSON.parse( data );
+    //Parse all the rows
+    for( i = 0 ; i < data.rows.length; i++ )
+    {
+      row = data.rows[i];
+      if( row.type == "section" )
+      {
+        //Add the new section at the bottom of the table, copied from quintet.section.js
+        $(".quintetForm").append(  quintet.widgets.section.create( JSON.parse(atob( row.data )) ) );
+      }
+      else
+      {
+        //Same as for section, most of this code was already in quintet.section.js
+        //TODO some refactoring is clearly desirable here.
+        //Add a set of new columns under the section
+        $(".quintetForm").append(  $('<tr class="contentRow"><td class="widgetColumn" style="vertical-align: top;"><div class="killmenow">&nbsp;</div></td></tr>') );
+        //make sure the columns have a minimum height, we might drop this..
+        $(".widgetColumn").css( "height" , "15px" );
+        
+      }
+    }
   }
+
 };
