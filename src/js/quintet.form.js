@@ -192,9 +192,13 @@ quintet.widgets.form =
   /* Build a form from serialized data  */
   build : function ( data )
   {
-    var i,row;
+    var i,j,e,col,row,form,widgetOptions;
     //Get back to the object
     data = JSON.parse( data );
+    //Get the form info
+    form = JSON.parse( atob( data.form ) );
+    //Apply options
+    this.apply( form );
     //Parse all the rows
     for( i = 0 ; i < data.rows.length; i++ )
     {
@@ -210,11 +214,27 @@ quintet.widgets.form =
         //TODO some refactoring is clearly desirable here.
         //Add a set of new columns under the section
         $(".quintetForm").append(  $('<tr class="contentRow"><td class="widgetColumn" style="vertical-align: top;"><div class="killmenow">&nbsp;</div></td></tr>') );
+        //And do some magic to get new columns
+        quintet.widgets.form.reApply();
         //make sure the columns have a minimum height, we might drop this..
         $(".widgetColumn").css( "height" , "15px" );
-        
+        for( j = 0 ; j < form.columns ; j++ )
+        {
+          col = row.columns[j];
+          //We need to count backwards.. so we use the little known negative offset feature of eq()
+          e = $(".quintetForm").find(".widgetColumn").eq( j - form.columns );
+          //Loop over all the widgets data, parse, instantiate and add
+          $.each( col.data , function( key, value ) 
+            {
+              widgetOptions = JSON.parse( atob( value ) );
+              e.append( quintet.widgets[widgetOptions.id].create( widgetOptions ) );
+            }
+          );
+        }
       }
     }
+    //Remove the close buttons
+    $(".close").remove();
   }
 
 };

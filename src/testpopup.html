@@ -49,7 +49,6 @@
 $(function()
 {
 	quintet.init();
-	$("#Container")[0].innerHTML = "Quintet 4 the win!"
 	quintet.widgets.form.build( localStorage.testForm );
 });
 </script>
@@ -58,8 +57,9 @@ $(function()
 <body>
 
 <div id="Container">
-	<table class="panelBorder quintetForm" style="width:99%"></table>
-	Quintet for the win!
+	<table class="panelBorder quintetForm" style="width:99%">
+		<input type="hidden" id="formOptions"></input>
+	</table>
 </div>
 
 </body>

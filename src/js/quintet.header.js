@@ -60,6 +60,10 @@ quintet.widgets.header =
     //use the style options of line
     quintet.widgets.line.styleOptions( o );
 
+    //final output should use _label which replaces all spaces with &nbsp;
+    //this is done so that people can have empty headers to level forms
+    o._label = o.label.replace(/\W/g,"&nbsp;")
+
     o.data = quintet.widget.encodeOptions( o );
 
     //Contrary to the original, I believe this to be
@@ -67,7 +71,7 @@ quintet.widgets.header =
 
     return $( sprintf('<div id="%(ref)s">%(_closeButton)s' +
                         '<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
-                        '<h2 class="%(id)s widget">%(label)s</h2>' +
+                        '<h2 class="%(id)s widget">%(_label)s</h2>' +
                     '</div>' , o )
       );
   }
