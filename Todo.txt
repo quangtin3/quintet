@@ -3,18 +3,25 @@ TODO
 Guidelines
 
 * Make and keep UI usable with bootstrap
-* Comment code much more
+* Comment code so much that people understand it
 
-Medium Term
+Long Term
 
-* Add many more widgets
-* Set up demo site
+* Bigger picture quintet.html with different activities of which builder is 1.
 
 Short Term
 
-* Wire field settings to the options
+* Double click widgets opens settings
+* Save/Load/Manage widgets
+* Save/Load/Manage forms
 
 DONE 
+
+June 20 2012
+
+* Many more widgets have been added
+* Demo site has been set up
+* Field and form settings have been wired to a settings UI
 
 May 17 2012
 
