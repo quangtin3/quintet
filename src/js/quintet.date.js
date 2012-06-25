@@ -34,6 +34,8 @@ quintet.widgets.date =
   createOptionsUI : function ( id , element )
   {
     quintet.widgets.line.createOptionsUI( id , element ); //<-- Lean on line
+    //Remove the field filter, we are only allowing dates
+    $("#field\\.filter").remove()
   },
 
   /* Mandatory : all widgets must have a create */
@@ -57,15 +59,18 @@ quintet.widgets.date =
                         '<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
                         '<div class="%(id)s widget">' +
                           '<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
-                          '<input type="text" class="datepicker"></input>' +
+                          '<input type="text" class="datepicker" />' +
                           '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
                         '</div>' +
                     '</div>' , o )
       );
   },
   //Lets just hope that reinits are not too bad
-  postCreate : function()
+  postCreate : function( o )
   {
-    $( ".datepicker" ).datepicker();
+    var defaultDate = o.value;// || "+0"
+    var q = $( "#" + o.ref + " .datepicker" );
+    q.datepicker( );
+    q.datepicker( "setDate" , defaultDate )
   }
 };
