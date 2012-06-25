@@ -95,7 +95,6 @@ quintet.builder =
     (
       function(e)
       {
-        console.log('Test Button Clicked');
         localStorage.testForm = quintet.widgets.form.serialize();
         quintet.widgets.form.popupTest();
       } 

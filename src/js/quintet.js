@@ -18,8 +18,9 @@ var quintet =
   init : function()
   {
     var key;
-    //Show the first tab of the left side panel
+    //Show the first tab of the left side panel and the application tabs
     $('#tabs a:first').tab('show');
+    $('#apptabs a:first').tab('show');
 
     //Enable the buttons
     for( key in this.widgets )
@@ -52,6 +53,7 @@ var quintet =
       { o._style = o._style + property + ":" + value + ";"; } 
   },
 
+  //TODO: move this to builder.js
   customize : function(e)
   {
     //We need to find an element ( this one or a parent to the nth degree ) with
@@ -70,6 +72,7 @@ var quintet =
     var widget = quintet.widget.find( id );
 
     widget.createOptionsUI( 'settings' , src );
+    $('#tabs a').eq( 1 ).tab( 'show' );
   },
 
   widget :

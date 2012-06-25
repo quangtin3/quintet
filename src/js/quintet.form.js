@@ -38,7 +38,7 @@ quintet.widgets.form =
     $("#"+id)[0].innerHTML =
       quintet.htmlbuilder
       .clear()
-      .h3("Basics")
+      //.h3("Basics")
       .well()
         .table("paddedStretch")
           .row("paddedStretch")
@@ -175,15 +175,16 @@ quintet.widgets.form =
         o.rows.push( { type : 'section' , data : rows.eq( i ).find( "#options" )[0].value } );
       }
     }
-    console.log( o );
-    console.log( JSON.stringify( o ) );
+    //console.log( o , JSON.stringify( o ) );
     return JSON.stringify( o );
   },
 
   /* Not sure this belongs here.. This is for testing a form */
   popupTest : function( data )
   {
-    var w = window.open( 'testpopup.html' , 'name' , 'height=200,width=150' );
+    //Lets have the same width as the right pane
+    var width = $("#rightColumn").width() || 600;
+    var w = window.open( 'testpopup.html' , 'name' , 'height=600,width='+width );
   	if (window.focus) 
       w.focus()
     return false;
@@ -197,6 +198,8 @@ quintet.widgets.form =
     data = JSON.parse( data );
     //Get the form info
     form = JSON.parse( atob( data.form ) );
+    //Set the title correctly of the window
+    document.title = "Quintet [" + form.name + "]";
     //Apply options
     this.apply( form );
     //Parse all the rows
