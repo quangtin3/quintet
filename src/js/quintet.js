@@ -71,8 +71,14 @@ var quintet =
     var id = src.className.split(" ")[0];
     var widget = quintet.widget.find( id );
 
+    //Store the previous widget for comparison after creating the UI
+    var previousWidget = quintet.widget.current;
+    //Create the options, during this time, quintet.widget.current is set
     widget.createOptionsUI( 'settings' , src );
-    $('#tabs a').eq( 1 ).tab( 'show' );
+    //If we are still are dealing with the same quintet.widget.current, 
+    //then the user is probably trying to access the properties
+    if( previousWidget == quintet.widget.current )
+      $('#tabs a').eq( 1 ).tab( 'show' );
   },
 
   widget :
