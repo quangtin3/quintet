@@ -89,9 +89,10 @@ until that is fixed by the folks in Redmond or you can use <a href="http://code.
 
 <u>Thoughts on DRY</u>
 
-This code violates DRY in several places, this is done to force compartmentalized
-widget code. Feel free to create issues on github for DRY violations outside of 
-quintet.&lt;widget&gt;.js
+The code violates DRY in several places, this is done to force compartmentalized
+widget code. Feel free to create github issues for DRY violations outside of the
+widget classes. One particular is <b>quintet.widget.current</b> which is a 'global' var
+in that totally disconnected pieces of code use it.
 
 
 --
