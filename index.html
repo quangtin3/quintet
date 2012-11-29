@@ -37,12 +37,31 @@
 
 <script>
   //Screen stuff
+  
+  map2 = {
+    apply : function( o , f )
+    {
+      for( var x = 0 ; x < o.map2.x ; x++ )
+      {
+        if(!o[x])
+          o[x] = [];        
+        for( var y = 0 ; y < o.map2.y ; y++ )
+        {
+          f( o[x][y] || {} , x , y , o );
+        }
+      }
+    }
+    
+  }
+  
   screen = {
     h : 25, //h is height
     w : 80, //w is width
+    map2 : {  x : h , y : w },
     c : [],    
     initialize : function()
     {
+      map2.apply( this , function(c){ c.char = 'o' , c.color = 'green' } );
       console.log( "Hello World" );
       return this;
     }
