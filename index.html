@@ -57,10 +57,10 @@
   screen = {
     h : 25, //h is height
     w : 80, //w is width
-    map2 : {  x : h , y : w },
     c : [],    
     initialize : function()
     {
+      this.map2 = {  x : this.h , y : this.w },      
       map2.apply( this , function(c){ c.char = 'o' , c.color = 'green' } );
       console.log( "Hello World" );
       return this;
