@@ -47,7 +47,7 @@
           o[x] = [];        
         for( var y = 0 ; y < o.map2.y ; y++ )
         {
-          f( o[x][y] || {} , x , y , o );
+          f( o[x][y] = o[x][y] || {} , x , y , o );
         }
       }
     }
@@ -60,7 +60,7 @@
     c : [],    
     initialize : function()
     {
-      this.map2 = {  x : this.h , y : this.w },      
+      this.map2 = {  x : this.w , y : this.h },      
       map2.apply( this , function(c){ c.char = 'o' , c.color = 'green' } );
       console.log( "Hello World" );
       return this;
