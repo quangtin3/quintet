@@ -41,10 +41,8 @@
   map2 = {
     apply : function( o , f )
     {
-      for( var x = 0 ; x < o.map2.x ; x++ )
+      for( var x = 0 ; x < o.map2.x , o[x] = o[x] || [] ; x++ )
       {
-        if(!o[x])
-          o[x] = [];        
         for( var y = 0 ; y < o.map2.y ; y++ )
         {
           f( o[x][y] = o[x][y] || {} , x , y , o );
