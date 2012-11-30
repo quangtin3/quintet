@@ -55,7 +55,8 @@
     initialize : function()
     {
       this.map2 = {  x : this.w , y : this.h },      
-      map2.apply( this , function(c){ c.char = 'o' , c.color = 'green' } );
+      if( oops )
+        map2.apply( this , function(c){ c.char = 'o' , c.color = 'green' } );
       console.log( "Hello World" );
       return this;
     }
