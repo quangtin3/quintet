@@ -1,13 +1,14 @@
 <html>
-  <header>
+  <head>
     <!--  -->
     <title>Mevarick</title>
     <style>
       body {background-color:black; color:white; white-space:pre; font-family:monospace; text-align:center }
       
     </style>
-  </header>
+  </head>
   <body>
+  <div id="screen">
     12345678901234567890123456789012345678901234567890123456789012345678901234567890
     12345678901234567890123456789012345678901234567890123456789012345678901234567890
     12345678901234567890123456789012345678901234567890123456789012345678901234567890
@@ -33,6 +34,7 @@
     12345678901234567890123456789012345678901234567890123456789012345678901234567890
     12345678901234567890123456789012345678901234567890123456789012345678901234567890
     12345678901234567890123456789012345678901234567890123456789012345678901234567890
+  </div>
 </body>
 
 <script>
@@ -41,27 +43,46 @@
   map2 = {
     apply : function( o , f )
     {
-      for( var x = 0 ; o[x] = o[x] || [] , x < o.map2.x ; x++ )
-        for( var y = 0 ; y < o.map2.y ; y++ )
+      for( var y = 0 ; y < o.map2.y ; y++ )
+        for( var x = 0 ; x < o.map2.x ; x++ )
           f( o[x][y] = o[x][y] || {} , x , y , o );
+    },
+    init : function( o ,f )
+    {
+      for( var x = 0 ; x < o.map2.x ; x++ )
+        if( o[x] = [] ) //I might burn for this :P
+          for( var y = 0 ; y < o.map2.y ; y++ )
+            f( o[x][y] = o[x][y] || {} , x , y , o );
     }
-    
   }
   
   screen = {
     h : 25, //h is height
     w : 80, //w is width
-    c : [],    
+    cursor : { x : 0 , y : 0 },
+    c : {}, 
+    div : document.getElementById("screen"),
     initialize : function()
     {
-      this.map2 = {  x : this.w , y : this.h },      
-      if( oops )
-        map2.apply( this , function(c){ c.char = 'o' , c.color = 'green' } );
+      this.c.map2 = {  x : this.w , y : this.h },      
+        map2.init( this.c , function(c,x,y,o){ c.char = 'o' , c.color = 'green' , c.eol = (x==o.map2.x-1) });
       console.log( "Hello World" );
       return this;
+    },
+    clear: function()
+    {
+      map2.apply( this.c , function(c){ c.char = '&nbsp;' } );
+      return this;
+    },
+    write : function()
+    {
+      this.c.html = '';
+      map2.apply( this.c , function(c,x,y,o){ o.html = o.html + c.char + (c.eol?"<br>":"") } );
+      console.log( this.c.html );
+      this.div.innerHTML = this.c.html;
+      return this;
     }
-  }.initialize();
+  }.initialize().clear().write();
 </script>
 
 </html>
-
