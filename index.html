@@ -8,81 +8,125 @@
     </style>
   </head>
   <body>
-  <div id="screen">
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    12345678901234567890123456789012345678901234567890123456789012345678901234567890
-  </div>
+  <div id="screen"></div>
 </body>
 
 <script>
-  //Screen stuff
-  
-  map2 = {
-    apply : function( o , f )
+//2d map helpers
+map2 = 
+{
+  apply : function( f )
+  {
+    for( var y = 0 ; y < this.map2.y ; y++ )
+      for( var x = 0 ; x < this.map2.x ; x++ )
+        f( this[x][y] , this );
+  },
+  applyRow : function( y , f )
+  {
+    for( var x = 0 ; x < this.map2.x ; x++ )
+      f( [x][y] , this );
+  },    
+  applyColumn : function( x , f )
+  {
+    for( var y = 0 ; x < this.map2.y ; y++ )
+      f( this[x][y] , this );
+  },        
+  applyBag : function( bag , f )
+  {
+     for( var i = 0 ; i < bag.length ; i++ )
+     {
+       this.cursor.x = bag[i].x || this.cursor.x;
+       this.cursor.y = bag[i].y || this.cursor.y;         
+       f( this[cursor.x][cursor.y] , bag[i] , this , bag  );
+     }
+  },    
+  init : function( o, config ,f )
+  {
+    o.map2 = config;
+    for( var x = 0 ; x < o.map2.x ; x++ )
+      if( o[x] = [] ) //I might burn for this :P
+        for( var y = 0 ; y < o.map2.y ; y++ )
+            f( o[x][y] = o[x][y] || { x : x , y : y } , x , y , o );
+    for( key in map2 )
+      o[key] = map2[key];
+  }
+}
+    
+function createCursor(parent,x,y)
+{
+  y = y || 0; x = x || 0,
+  cursor = {
+    parent : parent,
+    x : x,
+    y : y,
+    advance : function()
     {
-      for( var y = 0 ; y < o.map2.y ; y++ )
-        for( var x = 0 ; x < o.map2.x ; x++ )
-          f( o[x][y] = o[x][y] || {} , x , y , o );
-    },
-    init : function( o ,f )
-    {
-      for( var x = 0 ; x < o.map2.x ; x++ )
-        if( o[x] = [] ) //I might burn for this :P
-          for( var y = 0 ; y < o.map2.y ; y++ )
-            f( o[x][y] = o[x][y] || {} , x , y , o );
+      this.x++;
+      if( this.x == this.parent.w )
+      {
+        this.x = 0;
+        this.y++;
+        if( this.y == this.parent.h )
+          this.y = 0;  
+      }
     }
   }
-  
-  screen = {
-    h : 25, //h is height
-    w : 80, //w is width
-    cursor : { x : 0 , y : 0 },
-    c : {}, 
-    div : document.getElementById("screen"),
-    initialize : function()
-    {
-      this.c.map2 = {  x : this.w , y : this.h },      
-        map2.init( this.c , function(c,x,y,o){ c.char = 'o' , c.color = 'green' , c.eol = (x==o.map2.x-1) });
-      console.log( "Hello World" );
-      return this;
-    },
-    clear: function()
-    {
-      map2.apply( this.c , function(c){ c.char = '&nbsp;' } );
-      return this;
-    },
-    write : function()
-    {
-      this.c.html = '';
-      map2.apply( this.c , function(c,x,y,o){ o.html = o.html + c.char + (c.eol?"<br>":"") } );
-      console.log( this.c.html );
-      this.div.innerHTML = this.c.html;
-      return this;
-    }
-  }.initialize().clear().write();
+  return cursor;
+}    
+    
+    
+//The screen  
+screen = 
+{
+  h : 25, //h is height
+  w : 80, //w is width
+  cursor : { x : 0 , y : 0 , color : false },
+  c : createCursor(), 
+  div : document.getElementById("screen"),
+  initialize : function()
+  {
+    map2.init( this , {  x : this.w , y : this.h } , function(c,x,y,o)
+    { 
+      c.char = 'o' , c.color = 'green' , c.eol = (x==o.map2.x-1) 
+    });
+    console.log( "Hello World" );
+    return this;
+  },
+  clear: function()
+  {
+    this.apply( function(c){ c.char = '&nbsp;' } );
+    return this;
+  },
+  print: function( s , color )
+  {
+     var oldColor = this.cursor.color;
+     if(color) 
+       this.cursor.color = color;
+
+     map2.applyBag( this.c , s.split("") , function( c , entry, o )
+     {
+       c.color = o.cursor.color || c.color;
+       c.char = entry;  
+       o.cursor.advance();
+     });
+     
+     if(color) 
+       this.cursor.color = oldColor;     
+     return this;
+  },
+  write : function()
+  {
+    this.c.html = '';
+    this.apply( function(c,o)
+    { 
+      o.html = o.html + c.char + (c.eol?"<br>":"") 
+    });
+    console.log( this.c.html );
+    this.div.innerHTML = this.c.html;
+    return this;
+  }
+}.initialize().clear().print("Hello World").write();
+
 </script>
 
 </html>
