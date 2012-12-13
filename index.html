@@ -103,7 +103,7 @@ screen =
      if(color) 
        this.cursor.color = color;
 
-     map2.applyBag( this.c , s.split("") , function( c , entry, o )
+     this.applyBag( this.c , s.split("") , function( c , entry, o )
      {
        c.color = o.cursor.color || c.color;
        c.char = entry;  
