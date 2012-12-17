@@ -12,14 +12,28 @@
 </body>
 
 <script>
+//constants
+var WALL=0;FLOOR=1,hack="";
+
 //2d map helpers
 map2 = 
-{
+{ dump : function()
+  {
+    hack = "";
+    this.apply( function(c){ if(c.dump)hack = hack + c.dump(c); });
+    console.log( hack );
+  },
   apply : function( f )
   {
     for( var y = 0 ; y < this.map2.y ; y++ )
       for( var x = 0 ; x < this.map2.x ; x++ )
         f( this[x][y] , this );
+  },
+  applyArea : function( from , to , f )
+  {
+    for( var y = min( from.y , to.y ) ; y < max( from.y , to.y ) ; y++ )
+      for( var x = min( from.x , to.x ) ; x < max( from.x , to.x ); x++ )
+        f( this[x][y] , this );      
   },
   applyRow : function( y , f )
   {
@@ -47,10 +61,17 @@ map2 =
     for( var x = 0 ; x < o.map2.x ; x++ )
       if( o[x] = [] ) //I might burn for this :P
         for( var y = 0 ; y < o.map2.y ; y++ )
-            f( o[x][y] = o[x][y] || { x : x , y : y } , x , y , o );
+          f( o[x][y] = o[x][y] || this.initCell(x,y,config) , x , y , o );
     for( key in map2 )
       o[key] = map2[key];
     return o;  
+  },
+  initCell : function( x, y , config )
+  {
+    var cell = { x : x , y : y };
+    if( x == config.x - 1 )
+      cell.eol = true;
+    return cell;    
   },
   neighbours : function( cell , v/*ectors*/, f/*ilter*/ )
   {
@@ -143,36 +164,124 @@ screen =
 }.initialize().clear().print("Hello World").write();
 
 
+function Map(config)
+{
+  if ( !(this instanceof Map) )
+      return new Map();
+
+  for( key in config )
+    this[key] = config[key];
+}
+
+Map.prototype.dumpCell = function( cell )
+{
+  var eol = cell.eol?"\n":""  
+  if( cell.feature == WALL )
+    return "#"+eol;
+  if( cell.feature == FLOOR )
+    return "."+eol;    
+  return "¿"+eol;
+}
+
 
 //http://kuoi.com/~kamikaze/GameDesign/art07_rogue_dungeon.php
 function dungeonGenerator( config )
-{
-  var grid = map2.init( { cells:[] } , { x:config.w , y:config.h } , function(c,x,y,o)
-  { 
-    c.connected = true;
-  });
-    
+{ //Initialize Grid
+  var grid = map2.init( { cells:[] } , { x:config.grid.w , y:config.grid.h } , function(){});
+  //Create the list of neighbours, collect all the cells  
   grid.apply( function(cell,grid)
   {
     cell.neighbours = grid.neighbours( cell , grid.allNeighbours );
     grid.cells.push(cell);
   });
+  //Randomize the list of cells
+  grid.cells = grid.cells.shuffle();
+  //Visit the grid
+  grid.cells.each( function(cell)
+  {
+    grid.applyBag( [cell] , function( cell , ignore1 , ignore2 , bag )    
+    {
+      if(!cell.connected)
+      {
+        for(var i = 0 ; i < cell.neighbours.length; i++)
+        {
+          var neighbour = cell.neighbours[i];  
+          if( !neighbour.connected )
+          {
+            cell.connected = neighbour.connected = true;
+            cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
+            neighbour.connectedTo  = ( neighbour.connectedTo || [] ).concat( cell );
+            bag.push[cell.neighbours[i]];
+            return;
+          }
+        }
+        //So, all neighbours are connected, very disconcerting :]
+        var neighbour = cell.neighbours.random();    
+        cell.connected = true;          
+        cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
+        neighbour.connectedTo = ( neighbour.connectedTo || [] ).concat( cell );          
+      }    
+    });
+  });
+  console.log( grid );
+  var map = map2.init( {} , { x:config.map.w , y:config.map.h } , function(c)
+  {
+    c.feature = WALL;
+    c.dump = Map.prototype.dumpCell;
+  });
+  console.log( map );
+  var xMultiple =  Math.floor(config.map.w / ( config.grid.w+1 ));
+  var yMultiple =  Math.floor(config.map.h / ( config.grid.h+1 ));    
+  grid.cells.each( function( cell )
+  {
+      cell.x = (cell.x+1)*xMultiple;
+      cell.y = (cell.y+1)*yMultiple;      
+  });
+  grid.cells.each( function( cell )
+  {
+    cell.connectedTo.each( function( to )
+    {
+      console.log( cell , to );
+      map.applyArea( cell, to , function( cell ){ cell.feature = FLOOR });
+    });
+  });        
+  map.dump();
+  
 
-   console.log( grid.cells.shuffle() );
 }
 
+
+
+
+//Protype magic                       
+                       
 Array.prototype.shuffle = function()
 {
   var out = [] , tmp = this , idx; 
   while( tmp.length )
   {
     out.push( tmp[idx = Math.floor(tmp.length * Math.random())] );
-    tmp = tmp.slice( idx , idx + 1 );                   
+    tmp = tmp.slice( 0 , idx ).concat( tmp.slice( idx + 1 ) );                  
   }
   return out;  
 }
 
-dungeonGenerator( { w:3 , h:3 } );
+Array.prototype.random = function()
+{
+  return this[ Math.floor(this.length * Math.random() ) ]
+}          
+          
+Array.prototype.each = function(f)
+{
+  for( var i = 0 ; i < this.length ; i++)
+    f(this[i],this);
+}
+
+//Silly magic    
+var a = Object.getOwnPropertyNames(Math);    
+for( key in a ) this[a[key]] = Math[a[key]]; 
+    
+dungeonGenerator( { grid : { w:4 , h:3 } , map : { w:80 , h:25 } } );
   
 </script>
 </html>
