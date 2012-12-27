@@ -12,8 +12,128 @@
 </body>
 
 <script>
-//constants
-var WALL=0;FLOOR=1,hack="";
+/*********************************************************
+* All sources in Mevarick are Copyright (c) by Konijn    *
+* I Konijn, release all code and data under the terms of *
+* of the GNU General Public License (version 2), as well *
+* as under the traditional Angband license. Distribution *
+* is allowed both under the terms of the GPL (version 2) *
+* or under the terms of the traditional Angband license. *
+*                                                        *
+* Exception: Mersenne Twister code got borrowed from     *
+* https://gist.github.com/300494                         *
+* Disclaimer: you would have to be crazy to re-use this! *
+*********************************************************/
+
+//Global constants
+hack="";
+ 
+//Protype magic                       
+Array.prototype.shuffle = function()
+{
+  var out = [] , tmp = this , idx; 
+  while( tmp.length )
+  {
+    out.push( tmp[idx = floor(tmp.length * random())] );
+    tmp = tmp.slice( 0 , idx ).concat( tmp.slice( idx + 1 ) );                  
+  }
+  return out;  
+}
+
+Array.prototype.random = function()
+{
+  return this[ floor(this.length * random() ) ]
+}          
+
+Array.prototype.each = function(f)
+{
+  for( var i = 0 ; i < this.length ; i++)
+    f(this[i],this);
+}
+
+Object.prototype.merge = function(bag)
+{
+  for(var key in bag)
+    if(bag.hasOwnProperty(key))
+      this[key] = bag[key]
+}    
+    
+//Silly magic    
+var a = Object.getOwnPropertyNames(Math);    
+for( var key in a ) this[a[key]] = Math[a[key]]; 
+
+//global secret sauce helpers
+function Args( o )
+{
+  if ( !(this instanceof Args) )
+    return new Args(o);
+  var s = o.callee.toString();
+  var keys = s.slice(s.indexOf('(')+1, s.indexOf(')')).match(/([^\s,]+)/g);
+  for( var i = 0 ; i < keys.length ; i ++ )
+    this[keys[i]] = o[i];
+}
+
+//Mersenne twister
+/*
+  var m = new MersenneTwister(seed);
+  var randomNumber = m.random();
+  Hijacked from https://gist.github.com/300494
+*/
+
+var MersenneTwister = function(seed) {
+  this.M = 397;
+  this.N = this.mti = 624;
+  this.mt = [(seed || new Date().getTime()) >>> 0];
+  console.log("Seed:", this.mt[0] );
+  for (var i=1; i<this.N; i++)
+  {
+    s = this.mt[i-1] ^ (this.mt[i-1] >>> 30);
+    this.mt[i] = ((((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + (s & 0x0000ffff) * 1812433253) + i) >>> 0;
+  }
+}  
+  
+/* generates a random number on [0,0xffffffff]-interval */
+MersenneTwister.prototype.int32 = function() {
+  var LOWER_MASK = 0x7fffffff; // least significant r bits
+  var UPPER_MASK = 0x80000000; // most significant w-r bits
+  var y;
+  var mag01 = new Array(0, 0x9908b0df); // mag01[x] = x * MATRIX_A  for x=0,1
+
+  if (this.mti >= this.N) { /* generate N words at one time */
+    var kk;
+
+    for (kk=0;kk<this.N-this.M;kk++) {
+      y = (this.mt[kk]&this.UPPER_MASK)|(this.mt[kk+1] & LOWER_MASK);
+      this.mt[kk] = this.mt[kk+this.M] ^ (y >>> 1) ^ mag01[y & 1];
+    }
+    for (;kk<this.N-1;kk++) {
+      y = (this.mt[kk]&this.UPPER_MASK)|(this.mt[kk+1] & LOWER_MASK);
+      this.mt[kk] = this.mt[kk+(this.M-this.N)] ^ (y >>> 1) ^ mag01[y & 1];
+    }
+    y = (this.mt[this.N-1]&this.UPPER_MASK)|(this.mt[0] & LOWER_MASK);
+    this.mt[this.N-1] = this.mt[this.M-1] ^ (y >>> 1) ^ mag01[y & 1];
+
+    this.mti = 0;
+  }
+
+/* Tempering */
+  y = this.mt[this.mti++]
+  y ^= (y >>> 11);
+  y ^= (y << 7) & 0x9d2c5680;
+  y ^= (y << 15) & 0xefc60000;
+  return (y ^ (y >>> 18)) >>> 0;
+}
+
+MersenneTwister.prototype.random = function() 
+{
+  return this.int32()*2.3283064365386963e-10;
+}
+    
+var twister = new MersenneTwister(3717022350)    
+function random()
+{
+  return twister.random()
+} 
 
 //2d map helpers
 map2 = 
@@ -31,8 +151,8 @@ map2 =
   },
   applyArea : function( from , to , f )
   {
-    for( var y = min( from.y , to.y ) ; y < max( from.y , to.y ) ; y++ )
-      for( var x = min( from.x , to.x ) ; x < max( from.x , to.x ); x++ )
+    for( var y = min( from.y , to.y ) ; y < max( from.y , to.y )+1 ; y++ )
+      for( var x = min( from.x , to.x ) ; x < max( from.x , to.x )+1; x++ )
         f( this[x][y] , this );      
   },
   applyRow : function( y , f )
@@ -48,11 +168,12 @@ map2 =
   applyBag : function( bag , f )
   {
      var cursor = this.cursor || { x : 0 , y : 0 };
-     for( var i = 0 ; i < bag.length ; i++ )
+     while( bag.length )
      {
-       cursor.x = bag[i].x || cursor.x;
-       cursor.y = bag[i].y || cursor.y;         
-       f( this[cursor.x][cursor.y] , bag[i] , this , bag  );
+       var stuff = bag.shift();
+       cursor.x = stuff.x || cursor.x;
+       cursor.y = stuff.y || cursor.y;         
+       f( this[cursor.x][cursor.y] , stuff , this , bag  );
      }
   },    
   init : function( o, config ,f )
@@ -62,9 +183,17 @@ map2 =
       if( o[x] = [] ) //I might burn for this :P
         for( var y = 0 ; y < o.map2.y ; y++ )
           f( o[x][y] = o[x][y] || this.initCell(x,y,config) , x , y , o );
-    for( key in map2 )
-      o[key] = map2[key];
+      o.merge(map2);
     return o;  
+  },
+  initFromText : function( text , s1, s2 )
+  {
+    var config = { x : text.split(s1)[0].split(s2).length , y : text.split(s1).length };
+    return map2.init( {} , config , function(cell,x,y)
+    { //Horribly ineffecient, I know
+      cell.value = text.split(s1)[y].split(s2)[x];    
+    });    
+      
   },
   initCell : function( x, y , config )
   {
@@ -83,34 +212,80 @@ map2 =
             set.push( maybe );
     return set;    
   },
+  filter : function( f )
+  {
+    var set= [];
+    for( var y = 0 ; y < this.map2.y ; y++ )
+      for( var x = 0 ; x < this.map2.x ; x++ )
+        if (f( this[x][y] , this ))
+          set.push( this[x][y] );    
+    return set;
+  },
   allNeighbours: [ {x:0,y:-1},{x:0,y:1},{x:1,y:-1},{x:1,y:1},{x:1,y:0},{x:-1,y:-1},{x:-1,y:1},{x:-1,y:0} ],
   cardinalNeighbours : [{x:0,y:-1},{x:0,y:1},{x:1,y:0},{x:-1,y:0}]
 }
-    
-function createCursor(parent,x,y,cursor)
+ 
+//Dungeon Features    
+features = 
 {
-  y = y || 0; x = x || 0,
-  cursor = {
-    parent : parent,
-    color : cursor,
-    x : x,
-    y : y,
-    advance : function()
+  Feature : function(bag)
+  {
+    this.merge( bag );
+  },
+  addBase : function(char,color,description)
+  {
+    this[char] = new this.Feature( Args( arguments ) );
+    return this; 
+  },
+  init : function()
+  {
+    this.Feature.prototype.dump = function()
     {
-      this.x++;
-      if( this.x == this.parent.w )
-      {
-        this.x = 0;
-        this.y++;
-        if( this.y == this.parent.h )
-          this.y = 0;  
-      }
+      return this.char;
+    }
+    return this;
+  }
+}.init()
+.addBase( " " , "w" , "Void" )
+.addBase( "." , "w" , "Floor" )
+.addBase( "#" , "w" , "Wall" )
+.addBase( ";" , "w" , "Glyph of Warding" )
+.addBase( "'" , "U" , "Open door" )
+.addBase( "+" , "U" , "Closed door" )
+.addBase( ">" , "r" , "Down stairs" )
+.addBase( "<" , "r" , "Up stairs" )
+.addBase( "^" , "r" , "Trap" )
+.addBase( ":" , "w" , "Rubble" )
+.addBase( "%" , "s" , "Vein" )
+.addBase( "`" , "w" , "Portal" )
+.addBase( "1" , "w" , "General store" )
+.addBase( "2" , "w" , "Armory" )
+.addBase( "3" , "w" , "Weapon shop" )
+.addBase( "4" , "w" , "Temple" )
+.addBase( "5" , "w" , "Alchemist" )      
+.addBase( "6" , "w" , "Magic shop" )
+.addBase( "7" , "w" , "Black market" )
+.addBase( "8" , "w" , "Home" )
+.addBase( "9" , "w" , "Book store" )
+      
+console.log( "Features: " , features );
+    
+function Cursor(parent,x,y,color)
+{
+  this.merge( Args( arguments ) );  
+  this.advance = function()
+  {
+    this.x++;
+    if( this.x == this.parent.w )
+    {
+      this.x = 0;
+      this.y++;
+      if( this.y == this.parent.h )
+        this.y = 0;  
     }
   }
-  return cursor;
 }    
-    
-    
+        
 //The screen  
 screen = 
 {
@@ -124,7 +299,7 @@ screen =
     { 
       c.char = 'o' , c.color = 'green' , c.eol = (x==o.map2.x-1) 
     });
-    this.cursor = createCursor(this,0,0,false);
+    this.cursor = new Cursor(this,0,0,false);
     console.log( "Hello World" );
     return this;
   },
@@ -168,18 +343,14 @@ function Map(config)
 {
   if ( !(this instanceof Map) )
       return new Map();
-
-  for( key in config )
-    this[key] = config[key];
+  this.merge(config);
 }
 
 Map.prototype.dumpCell = function( cell )
 {
   var eol = cell.eol?"\n":""  
-  if( cell.feature == WALL )
-    return "#"+eol;
-  if( cell.feature == FLOOR )
-    return "."+eol;    
+  if( cell.feature.char )
+    return cell.feature.char+eol;      
   return "¿"+eol;
 }
 
@@ -191,7 +362,7 @@ function dungeonGenerator( config )
   //Create the list of neighbours, collect all the cells  
   grid.apply( function(cell,grid)
   {
-    cell.neighbours = grid.neighbours( cell , grid.allNeighbours );
+    cell.neighbours = grid.neighbours( cell , grid.cardinalNeighbours ).shuffle();
     grid.cells.push(cell);
   });
   //Randomize the list of cells
@@ -201,87 +372,108 @@ function dungeonGenerator( config )
   {
     grid.applyBag( [cell] , function( cell , ignore1 , ignore2 , bag )    
     {
-      if(!cell.connected)
+      for(var i = 0 ; i < cell.neighbours.length; i++)
       {
-        for(var i = 0 ; i < cell.neighbours.length; i++)
+        var neighbour = cell.neighbours[i];  
+        if( !neighbour.connected )
         {
-          var neighbour = cell.neighbours[i];  
-          if( !neighbour.connected )
-          {
-            cell.connected = neighbour.connected = true;
-            cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
-            neighbour.connectedTo  = ( neighbour.connectedTo || [] ).concat( cell );
-            bag.push[cell.neighbours[i]];
-            return;
-          }
+          cell.connected = neighbour.connected = true;
+          cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
+          console.log( "Connect & Out", cell , neighbour );  
+          bag.push(neighbour);
+          return;
         }
-        //So, all neighbours are connected, very disconcerting :]
-        var neighbour = cell.neighbours.random();    
-        cell.connected = true;          
-        cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
-        neighbour.connectedTo = ( neighbour.connectedTo || [] ).concat( cell );          
-      }    
+      }
+      //So, all neighbours are connected, very disconcerting :]
+      var neighbour = cell.neighbours.random();    
+      cell.connected = true;          
+      cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
+      console.log( "Connect & Next", cell , neighbour );    
     });
   });
   console.log( grid );
   var map = map2.init( {} , { x:config.map.w , y:config.map.h } , function(c)
   {
-    c.feature = WALL;
+    c.feature = features["#"];
     c.dump = Map.prototype.dumpCell;
   });
   console.log( map );
-  var xMultiple =  Math.floor(config.map.w / ( config.grid.w+1 ));
-  var yMultiple =  Math.floor(config.map.h / ( config.grid.h+1 ));    
+  var xMultiple =  floor((config.map.w-1) / ( config.grid.w ));
+  var yMultiple =  floor((config.map.h-1) / ( config.grid.h ));    
+  console.log( "Multiples" , xMultiple , yMultiple );
   grid.cells.each( function( cell )
   {
-      cell.x = (cell.x+1)*xMultiple;
-      cell.y = (cell.y+1)*yMultiple;      
+      cell.x = ceil((cell.x + 0.5)*xMultiple);
+      cell.y = ceil((cell.y + 0.5)*yMultiple);      
   });
   grid.cells.each( function( cell )
   {
     cell.connectedTo.each( function( to )
     {
-      console.log( cell , to );
-      map.applyArea( cell, to , function( cell ){ cell.feature = FLOOR });
+      map.applyArea( cell, to , function( cell ){ cell.feature = features["."]; });
     });
+    dungeonGenerator.rooms.apply( map , cell );
   });        
   map.dump();
-  
 
 }
 
+dungeonGenerator.rooms = {
 
-
-
-//Protype magic                       
-                       
-Array.prototype.shuffle = function()
-{
-  var out = [] , tmp = this , idx; 
-  while( tmp.length )
+  "9by4"  : [".........",
+             ".........",    
+             "....*....",
+             "........."].join("\n"),
+  "shifted"  : [".........",
+                ".........",    
+                ".........",
+                "........*"].join("\n"),
+  "pyramid"  : ["####.####",
+                "###...###",    
+                "##.....##",
+                "...#*#..."].join("\n"),    
+  "11by3" : ["...........",
+             ".....*.....",
+             "..........."].join("\n"),    
+  "11by3" : ["##.......##",
+             ".#.......#.",    
+             ".....*.....",
+             ".#.......#.",
+             "##.......##"].join("\n"),        
+  "wiggle": ["#.#.#.#.#.#",
+             ".....*.....",
+             "#.#.#.#.#.#"].join("\n"),        
+  parse : function()
+  { 
+    var keys = [];
+    for( var key in this)
+    {
+      if( this.hasOwnProperty(key) && typeof this[key] != "function" )
+      {
+        //console.log( "Parsing: " , key );
+        var o = map2.initFromText( this[key] , "\n" , "");
+        var X = o.filter( function(c){return c.value=="*"} ).shift();
+        X.value = ".";
+        this[key] = o.filter( function(c){ c.dx = c.x - X.x ; c.dy = c.y - X.y ; return true });  
+        keys.push(key);    
+        //console.log(keys,key);                                       
+      }
+    }
+    this.keys = keys;                              
+    return this;
+  },
+  apply : function( map , center )
   {
-    out.push( tmp[idx = Math.floor(tmp.length * Math.random())] );
-    tmp = tmp.slice( 0 , idx ).concat( tmp.slice( idx + 1 ) );                  
-  }
-  return out;  
-}
-
-Array.prototype.random = function()
-{
-  return this[ Math.floor(this.length * Math.random() ) ]
-}          
-          
-Array.prototype.each = function(f)
-{
-  for( var i = 0 ; i < this.length ; i++)
-    f(this[i],this);
-}
-
-//Silly magic    
-var a = Object.getOwnPropertyNames(Math);    
-for( key in a ) this[a[key]] = Math[a[key]]; 
-    
-dungeonGenerator( { grid : { w:4 , h:3 } , map : { w:80 , h:25 } } );
+    var room = this[ this.keys.random() ];
+    room.each( function( cell )
+    {
+      map[center.x + cell.dx][center.y + cell.dy].feature = features[ cell.value ]; 
+    });
+  }            
+}.parse();                                      
+console.log( dungeonGenerator.rooms );                                      
+                       
+dungeonGenerator( { grid : { w:8 , h:3 } , map : { w:160 , h:25 } } );
   
 </script>
 </html>
