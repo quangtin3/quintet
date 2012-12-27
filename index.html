@@ -171,8 +171,8 @@ map2 =
      while( bag.length )
      {
        var stuff = bag.shift();
-       cursor.x = stuff.x || cursor.x;
-       cursor.y = stuff.y || cursor.y;         
+         cursor.x = (stuff.x === undefined ? cursor.x : stuff.x);
+         cursor.y = (stuff.y === undefined ? cursor.y : stuff.y);         
        f( this[cursor.x][cursor.y] , stuff , this , bag  );
      }
   },    
@@ -379,16 +379,17 @@ function dungeonGenerator( config )
         {
           cell.connected = neighbour.connected = true;
           cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
+          neighbour.connectedTo = ( neighbour.connectedTo || [] ).concat( cell);
           console.log( "Connect & Out", cell , neighbour );  
           bag.push(neighbour);
           return;
         }
       }
-      //So, all neighbours are connected, very disconcerting :]
-      var neighbour = cell.neighbours.random();    
-      cell.connected = true;          
-      cell.connectedTo = ( cell.connectedTo || [] ).concat( neighbour );
-      console.log( "Connect & Next", cell , neighbour );    
+      //Good job, everything is connected
+      cell.perfect = true
+      var possibleStarts = grid.filter( function(cell){ return cell.connected && !cell.perfect } ).shuffle();
+      if( possibleStarts.length )  
+        bag.push( possibleStarts[0] );
     });
   });
   console.log( grid );
