@@ -12,65 +12,62 @@
 'use strict';
 
 quintet.widgets.date =
-{
-  id : "date",
+        {
+            id: "date",
+            /* Mandatory : all widgets must have a createOptions */
+            /* These options will get serialized and stored in the backend for actual use */
+            createOptions: function()
+            {
+                var counter = $("." + this.id).length + 1;
+                var o = quintet.widgets.line.createOptions(); //<-- Lean on line
+                o.label = "Date " + (counter == 1 ? "" : (" " + counter));
+                o.hint = '';
+                o.required = false;
+                o.id = this.id;
+                o.ref = this.id + counter;
+                return o;
+            },
+            //Really, I am expecting the id to be
+            //+1 for innerHTML
+            createOptionsUI: function(id, element)
+            {
+                quintet.widgets.line.createOptionsUI(id, element); //<-- Lean on line
+                //Remove the field filter, we are only allowing dates
+                $("#field\\.filter").remove()
+            },
+            /* Mandatory : all widgets must have a create */
+            /* This is what the drag helper function calls, magic will place then the helper in the sortable form */
+            create: function(o /*options*/)
+            {
+                //get options or create new options
+                //this gets messed up, hence the go-around for the original self
+                if (!o || (o instanceof jQuery.Event))
+                    o = quintet.widgets.date.createOptions();
 
-  /* Mandatory : all widgets must have a createOptions */
-  /* These options will get serialized and stored in the backend for actual use */
-  createOptions :   function()
-  {
-    var counter = $("."+this.id).length + 1;
-    var o = quintet.widgets.line.createOptions(); //<-- Lean on line
-    o.label = "Date " + ( counter==1 ? "" : ( " " + counter ) );
-    o.hint = '';
-    o.required = false;
-    o.id = this.id;
-    o.ref = this.id + counter;
-    return o;
-  },
+                //use the style options of line
+                quintet.widgets.line.styleOptions(o);
 
-  //Really, I am expecting the id to be
-  //+1 for innerHTML
-  createOptionsUI : function ( id , element )
-  {
-    quintet.widgets.line.createOptionsUI( id , element ); //<-- Lean on line
-    //Remove the field filter, we are only allowing dates
-    $("#field\\.filter").remove()
-  },
+                o.data = quintet.widget.encodeOptions(o);
 
-  /* Mandatory : all widgets must have a create */
-  /* This is what the drag helper function calls, magic will place then the helper in the sortable form */
-  create : function( o /*options*/ )
-  {
-    //get options or create new options
-    //this gets messed up, hence the go-around for the original self
-    if( !o || (o instanceof jQuery.Event) )
-      o = quintet.widgets.date.createOptions();
+                //Contrary to the original, I believe this to be
+                //more maintainable than coding all this with DOM manipulation
 
-    //use the style options of line
-    quintet.widgets.line.styleOptions( o );
-
-    o.data = quintet.widget.encodeOptions( o );
-
-    //Contrary to the original, I believe this to be
-    //more maintainable than coding all this with DOM manipulation
-
-    return $( sprintf('<div id="%(ref)s">%(_closeButton)s' +
+                return $(sprintf('<div id="%(ref)s">%(_closeButton)s' +
                         '<input type="hidden" id="options" name="options" value=\'%(data)s\'>' +
                         '<div class="%(id)s widget">' +
-                          '<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
-                          '<input type="text" class="datepicker" />' +
-                          '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
+                        '<label style="%(_style)s">%(_isRequired)s<span %(_labelColor)s >%(label)s</span></label>' +
+                        '<input type="text" class="datepicker" />' +
+                        '<span class="formHint" %(_hintColor)s>%(hint)s</span>' +
                         '</div>' +
-                    '</div>' , o )
-      );
-  },
-  //Lets just hope that reinits are not too bad
-  postCreate : function( o )
-  {
-    var defaultDate = o.value;// || "+0"
-    var q = $( "#" + o.ref + " .datepicker" );
-    q.datepicker( );
-    q.datepicker( "setDate" , defaultDate )
-  }
-};
+                        '</div>', o)
+                        );
+            },
+            //Lets just hope that reinits are not too bad
+            postCreate: function(o)
+            {
+                var defaultDate = o.value;// || "+0"
+                var q = $("#" + o.ref + " .datepicker");
+                q.datepicker( );
+                q.datepicker("setDate", defaultDate)
+            }
+        };

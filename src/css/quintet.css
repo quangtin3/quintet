@@ -16,13 +16,13 @@ td.widgetColumn     { height:300px; padding-bottom: 30px;            } /* Contai
 .widgetButton:hover { background-color: #E6E6E6;
                       background-color: #D9D9D9 9;
                       background-image: none;
-                     -webkit-transition: background-position 0.1s linear;
-                     -moz-transition: background-position 0.1s linear;
-                     -ms-transition: background-position 0.1s linear;
-                     -o-transition: background-position 0.1s linear;
-                     -moz-box-shadow: 1px 1px 3px #999;
-                     -webkit-box-shadow: 1px 1px 3px #999;
-											box-shadow: 1px 1px 3px #999;                        } /* Widget buttons, the hovering part , fuuuuugly */
+                      -webkit-transition: background-position 0.1s linear;
+                      -moz-transition: background-position 0.1s linear;
+                      -ms-transition: background-position 0.1s linear;
+                      -o-transition: background-position 0.1s linear;
+                      -moz-box-shadow: 1px 1px 3px #999;
+                      -webkit-box-shadow: 1px 1px 3px #999;
+                      box-shadow: 1px 1px 3px #999;                        } /* Widget buttons, the hovering part , fuuuuugly */
 
 /***/
 /* Widget Section , this will be required when not building forms as well
@@ -52,5 +52,3 @@ textarea  { text-indent:0px; }                                /* Counter the * t
 .stretch   { width:100% }
 .stretch90 { width:90%  }
 .noTextIndent { text-indent:0px }
-
-?

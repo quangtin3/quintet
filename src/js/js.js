@@ -14,10 +14,10 @@
 
 String.prototype.condense = function()
 {
-	return this.split(" ").join("");
+    return this.split(" ").join("");
 };
 
 String.prototype.capitalizeFirst = function()
 {
-	return ( this.charAt(0).toUpperCase() + this.slice(1) );
+    return (this.charAt(0).toUpperCase() + this.slice(1));
 };

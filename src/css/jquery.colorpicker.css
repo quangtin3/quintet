@@ -28,7 +28,7 @@
 	padding: 0;
 	list-style-type: none;
 
-	+zoom: 1;
+	/*+zoom: 1;*/
 }
 
 .colorPicker ul:after {
